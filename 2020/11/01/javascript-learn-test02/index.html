@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>各进制数之间的转换 - liuyifeng&#39;s blog</title>
+  <title>javascript试题收录(二) - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-31 00:44" pubdate>
-        2020年10月31日 凌晨
+      <time datetime="2020-11-01 12:37" pubdate>
+        2020年11月1日 下午
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      467 字
+      138 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      1
        分钟
     </span>
   
@@ -242,82 +242,34 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">各进制数之间的转换</h1>
+            <h1 style="display: none">javascript试题收录(二)</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：13 小时前
+                  本文最后更新于：13 分钟前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <h2 id="其他进制数转换为10进制数"><a href="#其他进制数转换为10进制数" class="headerlink" title="其他进制数转换为10进制数"></a>其他进制数转换为10进制数</h2><p>其他进制数转10进制数算法：从尾巴开始算起，依次乘以对应数值（例如2进制除数就是2,16进制除数就是16）的0~n次方（n值为尾巴算起的第几位-1，这里的尾巴起点仅代表个位数，如果有小数，则从-1次方开始算起）</p>
-<pre><code class="hljs javascript"><span class="hljs-comment">//16进制数：0x07ff</span>
-<span class="hljs-comment">//转化为10进制数的算法：f*16^0 + f*16^1 + 7*16^2 = 2047</span>
+              <p>settimeout 与 serInterval的区别。</p>
+<a id="more"></a>
 
-<span class="hljs-comment">//8进制数：52</span>
-<span class="hljs-comment">//转化为10进制数的算法：2*8^0 + 5*8^1 = 42</span>
+<h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
+<span class="javascript">    <span class="hljs-keyword">let</span> timer1 = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;serInterval&quot;</span>);</span>
+    &#125;, 1000);
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">otherToVal10</span>(<span class="hljs-params">num, val</span>)</span>
-<span class="hljs-function"></span>&#123;
-<span class="hljs-keyword">let</span> arr = [];
-<span class="hljs-keyword">let</span> numStr = num.toString();
-<span class="hljs-built_in">console</span>.log(numStr)
-arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) : arr.concat(numStr.split(<span class="hljs-string">&quot;.&quot;</span>));
-<span class="hljs-keyword">let</span> squareMax = arr[<span class="hljs-number">0</span>].length - <span class="hljs-number">1</span>;
-<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;
-<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">0</span>].length; i++)
-&#123;
-	result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">0</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, squareMax - i);
-&#125;
-<span class="hljs-keyword">if</span> (arr.length &gt; <span class="hljs-number">1</span>)
-&#123;
-	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">1</span>].length; i++)
-	&#123;
-		result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">1</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, <span class="hljs-number">0</span> - <span class="hljs-number">1</span> - i);
-	&#125;
-&#125;
-<span class="hljs-keyword">return</span> result;
-&#125;</code></pre>
+<span class="javascript">    <span class="hljs-keyword">let</span> timer2 = <span class="hljs-function">() =&gt;</span> &#123;</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;setTimeout&quot;</span>);</span>
+<span class="javascript">        <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span>
+    &#125;
 
-<h2 id="10进制数转换为其他进制数"><a href="#10进制数转换为其他进制数" class="headerlink" title="10进制数转换为其他进制数"></a>10进制数转换为其他进制数</h2><p>10进制数转化为其他进制，只需要除以对应数值（例如2进制除数就是2,16进制除数就是16），记下商和余数；然后用商除以除数，继续记下商和余数；重复以上步骤直到商为0为止。然后余数逆序排列，就是对应要转化的进制数的结果。</p>
-<pre><code class="hljs reasonml"><span class="hljs-comment">//10进制数：100</span>
-<span class="hljs-comment">//转化为2进制数：</span>
-<span class="hljs-comment">/**</span>
-<span class="hljs-comment">* 100 / 2   商：50 余：0</span>
-<span class="hljs-comment">*  50 / 2   商：25 余：0</span>
-<span class="hljs-comment">*  25 / 2   商：12 余：1</span>
-<span class="hljs-comment">*  12 / 2   商： 6 余：0</span>
-<span class="hljs-comment">*   6 / 2   商： 3 余：0</span>
-<span class="hljs-comment">*   3 / 2   商： 1 余：1</span>
-<span class="hljs-comment">*   1 / 2   商： 0 余：1</span>
-<span class="hljs-comment">**/</span>
-<span class="hljs-comment">//结果：1100100</span>
+<span class="javascript">    <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
 
-<span class="hljs-comment">//10进制数：100</span>
-<span class="hljs-comment">//转化为16进制数：</span>
-<span class="hljs-comment">/**</span>
-<span class="hljs-comment">* 100 / 16  商：6 余：4</span>
-<span class="hljs-comment">*   6 / 16  商：0 余：6</span>
-<span class="hljs-comment">**/</span>
-<span class="hljs-comment">//结果：64</span>
-
-
-<span class="hljs-keyword">function</span> <span class="hljs-constructor">Val10ToVal(<span class="hljs-params">num</span>, <span class="hljs-params">val</span>)</span>
-&#123;
-	<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;
-	<span class="hljs-keyword">let</span> remainderArr = <span class="hljs-literal">[]</span>;
-	<span class="hljs-keyword">do</span> &#123;
-		<span class="hljs-keyword">let</span> remainder = num % <span class="hljs-keyword">val</span>;
-		remainderArr.push(remainder);
-		num = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Math</span>.</span></span>floor(num<span class="hljs-operator"> / </span><span class="hljs-keyword">val</span>);
-	&#125;
-	<span class="hljs-keyword">while</span> (num != <span class="hljs-number">0</span>)
-	console.log(remainderArr);
-	remainderArr = remainderArr.reverse<span class="hljs-literal">()</span>;
-	result = <span class="hljs-constructor">Number(<span class="hljs-params">remainderArr</span>.<span class="hljs-params">join</span>(<span class="hljs-string">&quot;&quot;</span>)</span>);
-	return result;
-&#125;</code></pre>
+<p>setTimeout 和 serInterval 都是延迟执行，后面的时间是延迟加入执行队列的时间</p>
+<p>serInterval 可能受网络波动等影响，后一个间歇调用可能在前一个间歇调用结束之前调用，一般很少调用setInterval</p>
+<p>想要间歇性地调用某个方法，可以使用setTimeout，在执行结束后再调用自身</p>
             </div>
             <hr>
             <div>
@@ -326,7 +278,7 @@ arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) 
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/categories/javascript/">javascript</a>
                     
                   </div>
                 
@@ -334,7 +286,9 @@ arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) 
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/tags/javascript/">javascript</a>
+                    
+                      <a class="hover-with-bg" href="/tags/javascript%E8%AF%95%E9%A2%98%E6%94%B6%E5%BD%95/">javascript试题收录</a>
                     
                   </div>
                 
@@ -347,9 +301,9 @@ arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) 
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/10/31/network-programming-note2/">
+                      <a href="/2020/11/01/javascript-learn-test03/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">几个非常用运算符</span>
+                        <span class="hidden-mobile">javascript试题收录(三)</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -357,8 +311,8 @@ arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) 
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/10/31/hello-liuyifeng/">
-                        <span class="hidden-mobile">努力，是为了遇见更好的自己。</span>
+                      <a href="/2020/11/01/javascript-learn-test01/">
+                        <span class="hidden-mobile">javascript试题收录(一)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -520,7 +474,7 @@ arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) 
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "各进制数之间的转换&nbsp;",
+        "javascript试题收录(二)&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,

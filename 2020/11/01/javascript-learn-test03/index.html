@@ -17,10 +17,23 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>标签 - liuyifeng&#39;s blog</title>
+  <title>javascript试题收录(三) - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -43,7 +56,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -149,7 +162,7 @@
 </nav>
 
     <div class="banner intro-2" id="background" parallax=true
-         style="background: url('/images/bigbg.png') no-repeat center center;
+         style="background: url('/images/bigbg.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
@@ -157,6 +170,56 @@
             <span class="h2" id="subtitle">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      刘逸风
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-01 12:46" pubdate>
+        2020年11月1日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      157 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      2
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
 
             
           </div>
@@ -169,24 +232,107 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">javascript试题收录(三)</h1>
+            
+              <p class="note note-info">
                 
+                  本文最后更新于：3 分钟前
+                
+              </p>
+            
+            <div class="markdown-body" id="post-body">
+              <p>如何更安全的获取链式对象属性。</p>
+<a id="more"></a>
 
-<div class="text-center tagcloud">
-  <a href="/tags/TypeScript/" style="font-size: 22.5px; color: #779bd3">TypeScript</a> <a href="/tags/javascript/" style="font-size: 30px; color: #337ab7">javascript</a> <a href="/tags/javascript%E8%AF%95%E9%A2%98%E6%94%B6%E5%BD%95/" style="font-size: 30px; color: #337ab7">javascript试题收录</a> <a href="/tags/%E6%88%91%E7%9A%84%E9%9A%8F%E7%AC%94/" style="font-size: 15px; color: #bbe">我的随笔</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 22.5px; color: #779bd3">网络编程</a>
-</div>
-
-              </div>
+<h2 id="获取链式对象属性"><a href="#获取链式对象属性" class="headerlink" title="获取链式对象属性"></a>获取链式对象属性</h2><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
+<span class="javascript">        <span class="hljs-comment">//一个 safeGet 函数，可以安全的获取无限多层次的数据，一旦数据不存在不会报错，会返回 undefined</span></span>
+<span class="javascript">        <span class="hljs-comment">//一般情况下只有需要检测未知的情况下才会调用try...catch...，毕竟它会消耗性能</span></span>
+<span class="javascript">        <span class="hljs-keyword">const</span> safeGet = <span class="hljs-function">(<span class="hljs-params">o, path</span>) =&gt;</span> &#123;</span>
+<span class="javascript">            <span class="hljs-keyword">try</span> &#123;</span>
+<span class="javascript">                <span class="hljs-keyword">return</span> path.split(<span class="hljs-string">&#x27;.&#x27;</span>).reduce(<span class="hljs-function">(<span class="hljs-params">o, k</span>) =&gt;</span> o[k], o)</span>
+<span class="javascript">            &#125; <span class="hljs-keyword">catch</span> (e) &#123;</span>
+<span class="javascript">                <span class="hljs-keyword">return</span> <span class="hljs-keyword">void</span> <span class="hljs-number">666</span></span>
+            &#125;
+        &#125;
+<span class="javascript">        <span class="hljs-keyword">var</span> data = &#123; <span class="hljs-attr">a</span>: &#123; <span class="hljs-attr">b</span>: &#123; <span class="hljs-attr">c</span>: <span class="hljs-string">&#x27;ScriptOJ&#x27;</span> &#125; &#125; &#125;</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.log(safeGet(data, <span class="hljs-string">&#x27;a.b.c.d.e.f.g&#x27;</span>), safeGet(data, <span class="hljs-string">&#x27;a.b.c&#x27;</span>))</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/javascript/">javascript</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/javascript/">javascript</a>
+                    
+                      <a class="hover-with-bg" href="/tags/javascript%E8%AF%95%E9%A2%98%E6%94%B6%E5%BD%95/">javascript试题收录</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章如需转载，请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/01/javascript-learn-test02/">
+                        <span class="hidden-mobile">javascript试题收录(二)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
   </main>
 
@@ -287,6 +433,31 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
 
 
   <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
@@ -294,7 +465,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "标签&nbsp;",
+        "javascript试题收录(三)&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,
@@ -309,6 +480,21 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
 
 
   <script  src="/js/local-search.js" ></script>
@@ -322,6 +508,20 @@
   </script>
 
 
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
 
 
 

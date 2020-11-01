@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>几个非常用运算符 - liuyifeng&#39;s blog</title>
+  <title>javascript试题收录(一) - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-31 00:44" pubdate>
-        2020年10月31日 凌晨
+      <time datetime="2020-11-01 12:34" pubdate>
+        2020年11月1日 下午
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      974 字
+      680 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      15
+      11
        分钟
     </span>
   
@@ -242,95 +242,110 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">几个非常用运算符</h1>
+            <h1 style="display: none">javascript试题收录(一)</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：13 小时前
+                  本文最后更新于：14 分钟前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <h3 id="二进制转化"><a href="#二进制转化" class="headerlink" title="二进制转化"></a>二进制转化</h3><p style="text-indent:2rem;">以下运算符涉及二进制转化，此处说明一下十进制转换为二进制的方法：除二取余法。（除以2取余数，余数逆序排列.。二进制数一般为32位，不够的往前面添0。）</p>
+              <p>常见的JS排序方式。</p>
+<a id="more"></a>
 
-<pre><code class="hljs [javascript]">&#x2F;&#x2F;十进制数转换为二进制
-&#x2F;&#x2F;例子一：5
-&#x2F;&#x2F;5&#x2F;2 &#x3D; 2 ... 1
-&#x2F;&#x2F;2&#x2F;2 &#x3D; 1 ... 0
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0 ... 1
-&#x2F;&#x2F;因此，（十进制数）5转化为（二进制数）就是101，二进制数一般为32位，不够的往前面添0。
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0000 0101
+<h2 id="三种常见的排序方式"><a href="#三种常见的排序方式" class="headerlink" title="三种常见的排序方式"></a>三种常见的排序方式</h2><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;result1&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;result2&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;result3&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;result4&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;result5&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr = [<span class="hljs-number">100</span>, <span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">21</span>, <span class="hljs-number">3</span>, <span class="hljs-number">22</span>, <span class="hljs-number">20</span>, <span class="hljs-number">5</span>, <span class="hljs-number">11</span>, <span class="hljs-number">9</span>, <span class="hljs-number">77</span>, <span class="hljs-number">99</span>, <span class="hljs-number">100</span>];</span>
+<span class="javascript">        <span class="hljs-comment">// var arr = [100, 1, 5, 11, 55, 2, 3, 55, 1, 88, 44, 177, 873, 12, 66, 88, 33, 124, 7, 21, 3, 22, 2, 33, 68, 60, 7, 0, 0, 88, 210, 336, 1000, 978, 90, 5, 11, 9, 77, 99, 100, 11, 55, 2, 3 , 55];</span></span>
+<span class="javascript">        <span class="hljs-comment">//数据用随机算法去生成。为了方便看结果，这里是复制的。</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr1 = arr.sort();</span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr2 = [...arr].sort(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> &#123; <span class="hljs-keyword">return</span> a-b; &#125;)</span>
+<span class="javascript">        <span class="hljs-comment">//带着疑问：~这个排序算是选择排序吧？</span></span>
+<span class="javascript">        <span class="hljs-comment">//选择排序</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr3 = [];</span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr_list = [...arr];</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.time(<span class="hljs-string">&quot;选择排序耗时&quot;</span>)</span>
+<span class="javascript">        <span class="hljs-keyword">while</span> (arr_list.length &gt; <span class="hljs-number">0</span>) &#123;</span>
+<span class="javascript">            <span class="hljs-keyword">let</span> min = arr_list[<span class="hljs-number">0</span>];</span>
+<span class="javascript">            <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>;</span>
+            if (arr_list.length == 1) &#123;
+<span class="javascript">                <span class="hljs-keyword">let</span> item=arr_list.splice(index, <span class="hljs-number">1</span>); </span>
+                arr3.push(item); 
+<span class="javascript">                <span class="hljs-keyword">break</span>;</span>
+            &#125;
+<span class="javascript">            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr_list.length; i++) &#123;</span>
+<span class="javascript">                <span class="hljs-keyword">let</span> child = arr_list[i]; </span>
+                if (child &lt; min) &#123; 
+                    min = child; index = i; 
+                &#125;
+                if (i == arr_list.length - 1) &#123; 
+<span class="javascript">                    <span class="hljs-keyword">let</span> item = arr_list.splice(index, <span class="hljs-number">1</span>); </span>
+                    arr3.push(item); 
+                &#125; 
+            &#125; 
+        &#125;
+<span class="javascript">        <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">&quot;选择排序耗时&quot;</span>)</span>
 
-&#x2F;&#x2F;例子二：24
-&#x2F;&#x2F;24&#x2F;2 &#x3D; 12 ... 0
-&#x2F;&#x2F;12&#x2F;2 &#x3D; 6  ... 0
-&#x2F;&#x2F;6&#x2F;2 &#x3D; 3   ... 0
-&#x2F;&#x2F;3&#x2F;2 &#x3D; 1   ... 1
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1
-&#x2F;&#x2F;因此，（十进制数）24转化为（二进制数）就是11000，二进制数一般为32位，不够的往前面添0。
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 1000
+<span class="javascript">        <span class="hljs-comment">//快速排序</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr_list2 = [...arr];</span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr4 = [];</span>
+<span class="javascript">        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sort</span>(<span class="hljs-params">arr</span>) </span>&#123;</span>
+            if (arr.length &lt;= 1) &#123;
+<span class="javascript">                <span class="hljs-comment">//递归出口</span></span>
+<span class="javascript">                <span class="hljs-keyword">return</span> arr;</span>
+            &#125;
+<span class="javascript">            <span class="hljs-keyword">let</span> middleIndex = <span class="hljs-built_in">Math</span>.floor(arr.length / <span class="hljs-number">2</span>);<span class="hljs-comment">//中间数的下标 分奇偶</span></span>
+<span class="javascript">            <span class="hljs-keyword">let</span> middle = arr[middleIndex];</span>
+<span class="javascript">            <span class="hljs-keyword">let</span> left = [];</span>
+<span class="javascript">            <span class="hljs-keyword">let</span> right = [];</span>
+<span class="javascript">            <span class="hljs-function"><span class="hljs-title">for</span>(<span class="hljs-params"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++</span>)</span>&#123;</span>
+<span class="javascript">                <span class="hljs-function"><span class="hljs-title">if</span>(<span class="hljs-params">arr[i] &lt; middle</span>)</span>&#123;</span>
+                    left.push(arr[i])
+                &#125;
+<span class="javascript">                <span class="hljs-keyword">else</span> <span class="hljs-function"><span class="hljs-title">if</span>(<span class="hljs-params">arr[i] &gt; middle</span>)</span>&#123;</span>
+                    right.push(arr[i])
+                &#125;
+<span class="javascript">                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i != middleIndex)&#123;</span>
+		other.push(arr[i])
+	&#125;
+            &#125;
+<span class="javascript">            <span class="hljs-keyword">return</span> sort(left).concat([middle], other, sort(right))</span>
+        &#125;
+<span class="javascript">        <span class="hljs-built_in">console</span>.time(<span class="hljs-string">&quot;快速排序耗时&quot;</span>)</span>
+        arr4 = sort(arr_list2);
+<span class="javascript">        <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">&quot;快速排序耗时&quot;</span>)</span>
 
-&#x2F;&#x2F;例子三：20
-&#x2F;&#x2F;20&#x2F;2 &#x3D; 10 ... 0
-&#x2F;&#x2F;10&#x2F;2 &#x3D; 5  ... 0
-&#x2F;&#x2F;5&#x2F;2 &#x3D; 2   ... 1
-&#x2F;&#x2F;2&#x2F;2 &#x3D; 1   ... 0
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 0100</code></pre>
+<span class="javascript">        <span class="hljs-comment">//冒泡排序</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr_list3 = [...arr];</span>
+<span class="javascript">        <span class="hljs-keyword">var</span> arr5 = [];</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.time(<span class="hljs-string">&quot;冒泡排序耗时&quot;</span>)</span>
+<span class="javascript">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>, len = arr_list3.length; i &lt; len; i++) &#123;</span>
+<span class="javascript">            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>; j &lt; len - <span class="hljs-number">1</span> - i; j++) &#123;  <span class="hljs-comment">//j &lt; len - 1 -i是因为每次外围循环后，会把最大的放到最后，就可以省下1次循环</span></span>
+                if (arr_list3[j] &gt; arr_list3[j + 1]) &#123;
+<span class="javascript">                    <span class="hljs-keyword">let</span> tmp = arr_list3[j + <span class="hljs-number">1</span>]</span>
+                    arr_list3[j + 1] = arr_list3[j];
+                    arr_list3[j] = tmp;
+                &#125;
+            &#125;
+        &#125;
+<span class="javascript">        <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">&quot;冒泡排序耗时&quot;</span>)</span>
+        arr5 = arr_list3;
 
-<h3 id="“-lt-lt-”运算符"><a href="#“-lt-lt-”运算符" class="headerlink" title="“&lt;&lt;”运算符"></a>“&lt;&lt;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&lt;&lt;&quot;运算符：用于对二进制数左移多少位。
-1 &lt;&lt; 0 &#x2F;&#x2F;结果：1
-1 &lt;&lt; 1 &#x2F;&#x2F;结果：2
-1 &lt;&lt; 2 &#x2F;&#x2F;结果：4
-1 &lt;&lt; 10 &#x2F;&#x2F;结果：1024
-5 &lt;&lt; 10 &#x2F;&#x2F;结果：5120
-&#x2F;&#x2F;由上可得x &lt;&lt; y 相当于 x * 2^y
+<span class="javascript">        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;result1&quot;</span>).innerText = <span class="hljs-string">`默认排序：<span class="hljs-subst">$&#123;arr1&#125;</span>`</span>;</span>
+<span class="javascript">        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;result2&quot;</span>).innerText = <span class="hljs-string">`a-b排序：<span class="hljs-subst">$&#123;arr2&#125;</span>`</span>;</span>
+<span class="javascript">        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;result3&quot;</span>).innerText = <span class="hljs-string">`选择排序：<span class="hljs-subst">$&#123;arr3&#125;</span>`</span>;</span>
+<span class="javascript">        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;result4&quot;</span>).innerText = <span class="hljs-string">`快速排序：<span class="hljs-subst">$&#123;arr4&#125;</span>`</span>;</span>
+<span class="javascript">        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;result5&quot;</span>).innerText = <span class="hljs-string">`冒泡排序：<span class="hljs-subst">$&#123;arr5&#125;</span>`</span>;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span></code></pre>
 
-&#x2F;&#x2F;较为常用的例子：
-const kb &#x3D; 1 &lt;&lt; 10; &#x2F;&#x2F;1024
-const mb &#x3D; kb &lt;&lt; 10; &#x2F;&#x2F;1048576
-const tb &#x3D; mb &lt;&lt; 10; 
-const gb &#x3D; tb &lt;&lt; 10;</code></pre>
-
-<h3 id="“-amp-”运算符"><a href="#“-amp-”运算符" class="headerlink" title="“&amp;”运算符"></a>“&amp;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&amp;&quot;运算符：用于对两个二进制操作数逐位“位与”进行比较。
-&#x2F;&#x2F;“位与”即1&amp;&amp;1&#x3D;&#x3D;1, 1&amp;&amp;0&#x3D;&#x3D;0, 0&amp;&amp;0&#x3D;&#x3D;0
-&#x2F;&#x2F;平时我们使用的数字都是十进制数，该方法是对转化后的二进制数进行比较。
-&#x2F;&#x2F;&quot;&amp;&quot;运算符就是比较二进制中为true的值提取出来，然后逐位计算true或false。
-
-24 &amp; 5 &#x2F;&#x2F;结果：0
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 0
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0000 0000
-
-24 &amp; 20 &#x2F;&#x2F;结果：16
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;数值20：0000 0000 0000 0000  0000 0000 0001 0100
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 0000</code></pre>
-
-<h3 id="“-”运算符"><a href="#“-”运算符" class="headerlink" title="“^”运算符"></a>“^”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;^&quot;运算符：用于对两个二进制操作数逐位“位异或”进行比较。
-&#x2F;&#x2F;“位异或”即1&amp;&amp;0&#x3D;&#x3D;1 1&amp;&amp;1&#x3D;&#x3D;0 0&amp;&amp;0&#x3D;&#x3D;0
-
-24 &amp; 5 &#x2F;&#x2F;结果：29
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre>
-
-<h3 id="“-”运算符-1"><a href="#“-”运算符-1" class="headerlink" title="“|”运算符"></a>“|”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;|&quot;运算符用于对两个二进制操作数逐位进行“位或”比较。
-&#x2F;&#x2F;“位与”即1||1&#x3D;&#x3D;1, 1||0&#x3D;&#x3D;1, 0||0&#x3D;&#x3D;0
-&#x2F;&#x2F;其他与&quot;&amp;&quot;运算符相似
-
-24 &amp; 5 &#x2F;&#x2F;结果：29
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre>
-
-<h3 id="“-”运算符-2"><a href="#“-”运算符-2" class="headerlink" title="“~”运算符"></a>“~”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;~&quot;运算符：简单理解为取负运算，再减去1
-
-~24 &#x2F;&#x2F;结果：-25 即：-24-1
-~10 &#x2F;&#x2F;结果：-11 即：-10-1</code></pre>
+<p>个人总结：当数据量小的时候，冒泡排序>选择排序>快速排序；当数据量大的时候，快速排序>冒泡排序>选择排序。当数据量越大，快速排序的优势便更明显。如果不想改变数据的相对位置，则选择冒泡排序。</p>
             </div>
             <hr>
             <div>
@@ -339,7 +354,7 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/categories/javascript/">javascript</a>
                     
                   </div>
                 
@@ -347,7 +362,9 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/tags/javascript/">javascript</a>
+                    
+                      <a class="hover-with-bg" href="/tags/javascript%E8%AF%95%E9%A2%98%E6%94%B6%E5%BD%95/">javascript试题收录</a>
                     
                   </div>
                 
@@ -360,9 +377,9 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/10/31/typescript-learn-note01/">
+                      <a href="/2020/11/01/javascript-learn-test02/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TypeScript笔记(一)</span>
+                        <span class="hidden-mobile">javascript试题收录(二)</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -370,8 +387,8 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/10/31/network-programming-note1/">
-                        <span class="hidden-mobile">各进制数之间的转换</span>
+                      <a href="/2020/10/25/typescript-learn-note03/">
+                        <span class="hidden-mobile">TypeScript笔记(三)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -533,7 +550,7 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "几个非常用运算符&nbsp;",
+        "javascript试题收录(一)&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,

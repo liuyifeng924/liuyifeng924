@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>TypeScript笔记(三) - liuyifeng&#39;s blog</title>
+  <title>努力，是为了遇见更好的自己。 - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-31 00:44" pubdate>
-        2020年10月31日 凌晨
+      <time datetime="2020-07-23 21:00" pubdate>
+        2020年7月23日 晚上
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      817 字
+      15 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13
+      1
        分钟
     </span>
   
@@ -242,138 +242,17 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">TypeScript笔记(三)</h1>
+            <h1 style="display: none">努力，是为了遇见更好的自己。</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：13 小时前
+                  本文最后更新于：1 天前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <h2 id="章前知识"><a href="#章前知识" class="headerlink" title="章前知识"></a>章前知识</h2><p>1.在JavaScript中，所有的string类型（或者被称为DOMString）都是使用UTF-16编码的，至于为什么，度娘知道。<br>2.JS字符编码———— ASCII || Unicode || UTF-8</p>
-<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>1.ascii编码通常是用1个字节表示字符，使用7位二进制数表示（剩下的1位为0，即0xxxxxxx），通常用来表示26个英文字母的大小写、数字0-9、标点符号以及一些特殊字符。<br>2.Unicode编码通常用2个字节表示字符，一些较为偏僻的字符就需要用到4个字节。<br>3.UTF-8编码是Unicode的实现方式之一，通常用3个字节表示1个汉字（UTF-8中文编码范围：u4e00-u9fa5，0x3400-0x4DB5）。</p>
-<p>还有一些字符编码如gbk之类的，需要用再查询研究了。</p>
-<h2 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h2><p>如果只有一个字节则其最高二进制位为0；如果是多字节，其第一个字节从最高位开始，连续的二进制位值为1的个数决定了其编码的位数，其余各字节均以10开头。UTF-8最多可用到6个字节。 </p>
-<p>-1字节：0xxxxxxx<br>-2字节：110xxxxx 10xxxxxx<br>-3字节：1110xxxx 10xxxxxx 10xxxxxx<br>-4字节：11110xxx 10xxxxxx 10xxxxxx 10xxxxxx<br>-5字节：111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx<br>-6字节：1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>部分代码尚未读懂，后续待增加注释。</p>
-<pre><code class="hljs angelscript">export <span class="hljs-keyword">class</span> <span class="hljs-symbol">StringCode</span>&#123;
-	
-	<span class="hljs-keyword">private</span> static inRange(a:number, min:number, max:number): <span class="hljs-built_in">bool</span>ean &#123;
-    	<span class="hljs-keyword">return</span> min &lt;= a &amp;&amp; a &lt;= max;
-	&#125;
-	
-	<span class="hljs-comment">/**  */</span>
-	<span class="hljs-keyword">private</span> static <span class="hljs-built_in">string</span>ToCodePoints(<span class="hljs-built_in">string</span>: <span class="hljs-built_in">string</span>): Array&lt;number&gt; &#123;
-		let cps = [];
-		let i = <span class="hljs-number">0</span>, n = <span class="hljs-built_in">string</span>.length;
-		<span class="hljs-keyword">while</span> (i &lt; <span class="hljs-built_in">string</span>.length) &#123;
-			let c = <span class="hljs-built_in">string</span>.charCodeAt(i);
-			<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.inRange(c, <span class="hljs-number">0xD800</span>, <span class="hljs-number">0xDFFF</span>)) &#123;
-				cps.push(c);
-			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(c, <span class="hljs-number">0xDC00</span>, <span class="hljs-number">0xDFFF</span>)) &#123;
-				cps.push(<span class="hljs-number">0xFFFD</span>);
-			&#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">// (inRange(c, 0xD800, 0xDBFF))</span>
-				<span class="hljs-keyword">if</span> (i == n - <span class="hljs-number">1</span>) &#123;
-					cps.push(<span class="hljs-number">0xFFFD</span>);
-				&#125; <span class="hljs-keyword">else</span> &#123;
-					let d = <span class="hljs-built_in">string</span>.charCodeAt(i + <span class="hljs-number">1</span>);
-					<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(d, <span class="hljs-number">0xDC00</span>, <span class="hljs-number">0xDFFF</span>)) &#123;
-						let a = c &amp; <span class="hljs-number">0x3FF</span>;
-						let b = d &amp; <span class="hljs-number">0x3FF</span>;
-						i += <span class="hljs-number">1</span>;
-						cps.push(<span class="hljs-number">0x10000</span> + (a &lt;&lt; <span class="hljs-number">10</span>) + b);
-					&#125; <span class="hljs-keyword">else</span> &#123;
-						cps.push(<span class="hljs-number">0xFFFD</span>);
-					&#125;
-				&#125;
-			&#125;
-			i += <span class="hljs-number">1</span>;
-		&#125;
-		<span class="hljs-keyword">return</span> cps;
-	&#125;
-
-	<span class="hljs-comment">/**</span>
-<span class="hljs-comment">	 * u8intarray转utf-8</span>
-<span class="hljs-comment">	 * @param array Uint8Array字节流</span>
-<span class="hljs-comment">	 */</span>
-	<span class="hljs-keyword">public</span> static u8ArrayToUtf8Str(<span class="hljs-built_in">array</span>: Uint8Array): <span class="hljs-built_in">string</span> &#123;
-		var <span class="hljs-keyword">out</span>, i, len, c;
-		var char2, char3;
-
-		<span class="hljs-keyword">out</span> = <span class="hljs-string">&quot;&quot;</span>;
-		len = <span class="hljs-built_in">array</span>.length;
-		i = <span class="hljs-number">0</span>;
-		<span class="hljs-keyword">while</span> (i &lt; len) &#123;
-			c = <span class="hljs-built_in">array</span>[i++];
-			<span class="hljs-keyword">switch</span> (c &gt;&gt; <span class="hljs-number">4</span>) &#123;
-				<span class="hljs-keyword">case</span> <span class="hljs-number">0</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">5</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">6</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">7</span>:
-					<span class="hljs-comment">// 0xxxxxxx 1个字节</span>
-					<span class="hljs-keyword">out</span> += String.fromCharCode(c);
-					<span class="hljs-keyword">break</span>;
-				<span class="hljs-keyword">case</span> <span class="hljs-number">12</span>: <span class="hljs-keyword">case</span> <span class="hljs-number">13</span>:
-					<span class="hljs-comment">// 110xxxxx 10xxxxxx 2个字节</span>
-					char2 = <span class="hljs-built_in">array</span>[i++];
-					<span class="hljs-keyword">out</span> += String.fromCharCode(((c &amp; <span class="hljs-number">0x1F</span>) &lt;&lt; <span class="hljs-number">6</span>) | (char2 &amp; <span class="hljs-number">0x3F</span>));
-					<span class="hljs-keyword">break</span>;
-				<span class="hljs-keyword">case</span> <span class="hljs-number">14</span>:
-					<span class="hljs-comment">// 1110xxxx 10xxxxxx 10xxxxxx 3个字节</span>
-					char2 = <span class="hljs-built_in">array</span>[i++];
-					char3 = <span class="hljs-built_in">array</span>[i++];
-					<span class="hljs-keyword">out</span> += String.fromCharCode(((c &amp; <span class="hljs-number">0x0F</span>) &lt;&lt; <span class="hljs-number">12</span>) |
-						((char2 &amp; <span class="hljs-number">0x3F</span>) &lt;&lt; <span class="hljs-number">6</span>) |
-						((char3 &amp; <span class="hljs-number">0x3F</span>) &lt;&lt; <span class="hljs-number">0</span>));
-					<span class="hljs-keyword">break</span>;
-			&#125;
-		&#125;
-		<span class="hljs-keyword">return</span> <span class="hljs-keyword">out</span>;
-	&#125;
-
-	<span class="hljs-comment">/**</span>
-<span class="hljs-comment">	 * utf-8转u8intarray</span>
-<span class="hljs-comment">	 * @param str string 字符串</span>
-<span class="hljs-comment">	 */</span>
-	<span class="hljs-keyword">public</span> static utf8StrToU8Array(str: <span class="hljs-built_in">string</span>):Uint8Array &#123;
-		let pos:number = <span class="hljs-number">0</span>;
-		let codePoints = <span class="hljs-keyword">this</span>.<span class="hljs-built_in">string</span>ToCodePoints(str);
-		let outputBytes = [];
-
-		<span class="hljs-keyword">while</span> (codePoints.length &gt; pos) &#123;
-			let code_point:number = codePoints[pos++];
-
-			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(code_point, <span class="hljs-number">0xD800</span>, <span class="hljs-number">0xDFFF</span>)) &#123;
-				console.error(<span class="hljs-string">&quot;UTF8 encoderError&quot;</span>,code_point)
-			&#125;
-			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(code_point, <span class="hljs-number">0x0000</span>, <span class="hljs-number">0x007f</span>)) &#123;
-				outputBytes.push(code_point);
-			&#125; <span class="hljs-keyword">else</span> &#123;
-				let count = <span class="hljs-number">0</span>, offset = <span class="hljs-number">0</span>;
-				<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(code_point, <span class="hljs-number">0x0080</span>, <span class="hljs-number">0x07FF</span>)) &#123;
-					count = <span class="hljs-number">1</span>;
-					offset = <span class="hljs-number">0xC0</span>;
-				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(code_point, <span class="hljs-number">0x0800</span>, <span class="hljs-number">0xFFFF</span>)) &#123;
-					count = <span class="hljs-number">2</span>;
-					offset = <span class="hljs-number">0xE0</span>;
-				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.inRange(code_point, <span class="hljs-number">0x10000</span>, <span class="hljs-number">0x10FFFF</span>)) &#123;
-					count = <span class="hljs-number">3</span>;
-					offset = <span class="hljs-number">0xF0</span>;
-				&#125;
-
-				outputBytes.push(Math.floor(code_point/Math.pow(<span class="hljs-number">64</span>, count)) + offset);
-
-				<span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>) &#123;
-					let temp = Math.floor(code_point/Math.pow(<span class="hljs-number">64</span>, count - <span class="hljs-number">1</span>));
-					outputBytes.push(<span class="hljs-number">0x80</span> + (temp % <span class="hljs-number">64</span>));
-					count -= <span class="hljs-number">1</span>;
-				&#125;
-			&#125;
-		&#125;
-		<span class="hljs-keyword">return</span> new Uint8Array(outputBytes);
-	&#125;
-&#125;</code></pre>
-
-<p>-<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2008/06/base64.html">参考博文：Base64笔记</a><br>-<a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-52437-id-3325514.html">参考博文：js下，二进制数据（编码utf8编码方式）转换到字符串</a><br>-<a target="_blank" rel="noopener" href="https://blog.csdn.net/machinecat5888/article/details/81490930">参考博文：UTF-8编码规则</a></p>
-
+              <p><img src="/background/park0001.jpg" srcset="/img/loading.gif"></p>
+<p style="text-indent:2rem;">生活依旧在继续，你能做的唯有努力。</p>
             </div>
             <hr>
             <div>
@@ -382,7 +261,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/TypeScript/">TypeScript</a>
+                      <a class="hover-with-bg" href="/categories/%E6%88%91%E7%9A%84%E9%9A%8F%E7%AC%94/">我的随笔</a>
                     
                   </div>
                 
@@ -390,7 +269,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/TypeScript/">TypeScript</a>
+                      <a class="hover-with-bg" href="/tags/%E6%88%91%E7%9A%84%E9%9A%8F%E7%AC%94/">我的随笔</a>
                     
                   </div>
                 
@@ -403,15 +282,15 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2020/08/12/typescript-learn-note01/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">TypeScript笔记(一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/2020/10/31/typescript-learn-note02/">
-                        <span class="hidden-mobile">TypeScript笔记(二)</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>
@@ -570,7 +449,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "TypeScript笔记(三)&nbsp;",
+        "努力，是为了遇见更好的自己。&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,
