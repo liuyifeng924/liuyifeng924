@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>几个非常用运算符 - liuyifeng&#39;s blog</title>
+  <title>TypeScript笔记(二) - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-10-22 20:01" pubdate>
-        2020年10月22日 晚上
+      <time datetime="2020-08-14 10:22" pubdate>
+        2020年8月14日 上午
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      996 字
+      374 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      15
+      6
        分钟
     </span>
   
@@ -242,7 +242,7 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">几个非常用运算符</h1>
+            <h1 style="display: none">TypeScript笔记(二)</h1>
             
               <p class="note note-info">
                 
@@ -251,89 +251,112 @@
               </p>
             
             <div class="markdown-body" id="post-body">
-              <p>一些平时不常用到的运算符，但却经常见到的运算符。</p>
+              <style>
+    p {
+        text-indent: 2rem;
+    }
+</style>
+
+<p>this指向问题</p>
+
 <a id="more"></a>
 
-<h3 id="二进制转化"><a href="#二进制转化" class="headerlink" title="二进制转化"></a>二进制转化</h3><p style="text-indent:2rem;">以下运算符涉及二进制转化，此处说明一下十进制转换为二进制的方法：除二取余法。（除以2取余数，余数逆序排列.。二进制数一般为32位，不够的往前面添0。）</p>
+<h2 id="this指向"><a href="#this指向" class="headerlink" title="this指向"></a>this指向</h2><ul>
+<li>普通函数</li>
+<li>箭头函数</li>
+</ul>
+<h3 id="普通函数"><a href="#普通函数" class="headerlink" title="普通函数"></a>普通函数</h3><p>this永远指向的是最后调用它的对象，也就是看它执行的时候是谁调用的。</p>
 
-<pre><code class="hljs [javascript]">&#x2F;&#x2F;十进制数转换为二进制
-&#x2F;&#x2F;例子一：5
-&#x2F;&#x2F;5&#x2F;2 &#x3D; 2 ... 1
-&#x2F;&#x2F;2&#x2F;2 &#x3D; 1 ... 0
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0 ... 1
-&#x2F;&#x2F;因此，（十进制数）5转化为（二进制数）就是101，二进制数一般为32位，不够的往前面添0。
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0000 0101
+<pre><code class="hljs javascript"><span class="hljs-comment">//例子1</span>
+<span class="hljs-comment">//引用logger的printName方法</span>
+<span class="hljs-comment">//调用的时候是window环境</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Logger</span> </span>&#123;
+  <span class="hljs-function"><span class="hljs-title">printName</span>(<span class="hljs-params">name = <span class="hljs-string">&#x27;there&#x27;</span></span>)</span> &#123;
+    <span class="hljs-built_in">this</span>.print(<span class="hljs-string">`Hello <span class="hljs-subst">$&#123;name&#125;</span>`</span>);
+  &#125;
 
-&#x2F;&#x2F;例子二：24
-&#x2F;&#x2F;24&#x2F;2 &#x3D; 12 ... 0
-&#x2F;&#x2F;12&#x2F;2 &#x3D; 6  ... 0
-&#x2F;&#x2F;6&#x2F;2 &#x3D; 3   ... 0
-&#x2F;&#x2F;3&#x2F;2 &#x3D; 1   ... 1
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1
-&#x2F;&#x2F;因此，（十进制数）24转化为（二进制数）就是11000，二进制数一般为32位，不够的往前面添0。
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 1000
+  <span class="hljs-function"><span class="hljs-title">print</span>(<span class="hljs-params">text</span>)</span> &#123;
+    <span class="hljs-built_in">console</span>.log(text);
+  &#125;
+&#125;
 
-&#x2F;&#x2F;例子三：20
-&#x2F;&#x2F;20&#x2F;2 &#x3D; 10 ... 0
-&#x2F;&#x2F;10&#x2F;2 &#x3D; 5  ... 0
-&#x2F;&#x2F;5&#x2F;2 &#x3D; 2   ... 1
-&#x2F;&#x2F;2&#x2F;2 &#x3D; 1   ... 0
-&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1
-&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 0100</code></pre>
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger();
+<span class="hljs-keyword">const</span> &#123; printName &#125; = logger;
+printName(); <span class="hljs-comment">//报错print no undefined</span></code></pre>
 
-<h3 id="“-lt-lt-”运算符"><a href="#“-lt-lt-”运算符" class="headerlink" title="“&lt;&lt;”运算符"></a>“&lt;&lt;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&lt;&lt;&quot;运算符：用于对二进制数左移多少位。
-1 &lt;&lt; 0 &#x2F;&#x2F;结果：1
-1 &lt;&lt; 1 &#x2F;&#x2F;结果：2
-1 &lt;&lt; 2 &#x2F;&#x2F;结果：4
-1 &lt;&lt; 10 &#x2F;&#x2F;结果：1024
-5 &lt;&lt; 10 &#x2F;&#x2F;结果：5120
-&#x2F;&#x2F;由上可得x &lt;&lt; y 相当于 x * 2^y
+<p>稍作修改，把printName方法绑定在logger类中。</p>
 
-&#x2F;&#x2F;较为常用的例子：
-const kb &#x3D; 1 &lt;&lt; 10; &#x2F;&#x2F;1024
-const mb &#x3D; kb &lt;&lt; 10; &#x2F;&#x2F;1048576
-const tb &#x3D; mb &lt;&lt; 10; 
-const gb &#x3D; tb &lt;&lt; 10;</code></pre>
+<pre><code class="hljs javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Logger</span> </span>&#123;
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> &#123;
+    <span class="hljs-built_in">this</span>.printName = <span class="hljs-built_in">this</span>.printName.bind(<span class="hljs-built_in">this</span>);
+  &#125;
+  
+  <span class="hljs-function"><span class="hljs-title">printName</span>(<span class="hljs-params">name = <span class="hljs-string">&#x27;there&#x27;</span></span>)</span> &#123;
+    <span class="hljs-built_in">this</span>.print(<span class="hljs-string">`Hello <span class="hljs-subst">$&#123;name&#125;</span>`</span>);
+  &#125;
 
-<h3 id="“-amp-”运算符"><a href="#“-amp-”运算符" class="headerlink" title="“&amp;”运算符"></a>“&amp;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&amp;&quot;运算符：用于对两个二进制操作数逐位“位与”进行比较。
-&#x2F;&#x2F;“位与”即1&amp;&amp;1&#x3D;&#x3D;1, 1&amp;&amp;0&#x3D;&#x3D;0, 0&amp;&amp;0&#x3D;&#x3D;0
-&#x2F;&#x2F;平时我们使用的数字都是十进制数，该方法是对转化后的二进制数进行比较。
-&#x2F;&#x2F;&quot;&amp;&quot;运算符就是比较二进制中为true的值提取出来，然后逐位计算true或false。
+  <span class="hljs-function"><span class="hljs-title">print</span>(<span class="hljs-params">text</span>)</span> &#123;
+    <span class="hljs-built_in">console</span>.log(text);
+  &#125;
+&#125;
 
-24 &amp; 5 &#x2F;&#x2F;结果：0
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 0
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0000 0000
+<span class="hljs-keyword">const</span> logger = <span class="hljs-keyword">new</span> Logger();
+<span class="hljs-keyword">const</span> &#123; printName &#125; = logger;
+printName(); <span class="hljs-comment">//hello there</span></code></pre>
 
-24 &amp; 20 &#x2F;&#x2F;结果：16
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;数值20：0000 0000 0000 0000  0000 0000 0001 0100
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 0000</code></pre>
+<h3 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h3><p>this指向它的上下文环境。</p>
 
-<h3 id="“-”运算符"><a href="#“-”运算符" class="headerlink" title="“^”运算符"></a>“^”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;^&quot;运算符：用于对两个二进制操作数逐位“位异或”进行比较。
-&#x2F;&#x2F;“位异或”即1&amp;&amp;0&#x3D;&#x3D;1 1&amp;&amp;1&#x3D;&#x3D;0 0&amp;&amp;0&#x3D;&#x3D;0
+<pre><code class="hljs javascript"><span class="hljs-comment">//箭头函数</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Obj</span> </span>&#123;
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> &#123;
+      <span class="hljs-built_in">this</span>.name = <span class="hljs-string">&quot;Lily&quot;</span>;
+      <span class="hljs-built_in">this</span>.getName = <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">this</span>.name;
+  &#125;
+&#125;
 
-24 &amp; 5 &#x2F;&#x2F;结果：29
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre>
+<span class="hljs-keyword">const</span> myObj = <span class="hljs-keyword">new</span> Obj();
+<span class="hljs-keyword">const</span> &#123; getName &#125; = myObj ;
+getName(); <span class="hljs-comment">//Lily </span></code></pre>
 
-<h3 id="“-”运算符-1"><a href="#“-”运算符-1" class="headerlink" title="“|”运算符"></a>“|”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;|&quot;运算符用于对两个二进制操作数逐位进行“位或”比较。
-&#x2F;&#x2F;“位与”即1||1&#x3D;&#x3D;1, 1||0&#x3D;&#x3D;1, 0||0&#x3D;&#x3D;0
-&#x2F;&#x2F;其他与&quot;&amp;&quot;运算符相似
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>下面是其他的几个例子。</p>
 
-24 &amp; 5 &#x2F;&#x2F;结果：29
-&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1
-&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101
-&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000
-&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre>
-
-<h3 id="“-”运算符-2"><a href="#“-”运算符-2" class="headerlink" title="“~”运算符"></a>“~”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;~&quot;运算符：简单理解为取负运算，再减去1
-
-~24 &#x2F;&#x2F;结果：-25 即：-24-1
-~10 &#x2F;&#x2F;结果：-11 即：-10-1</code></pre>
+<pre><code class="hljs javascript"><span class="hljs-comment">//普通函数</span>
+<span class="hljs-keyword">var</span> name = <span class="hljs-string">&#x27;my name is window&#x27;</span>;
+  <span class="hljs-keyword">var</span> obj = &#123;
+      name: <span class="hljs-string">&#x27;my name is obj&#x27;</span>,
+      fn: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+          <span class="hljs-keyword">var</span> timer = <span class="hljs-literal">null</span>;
+          <span class="hljs-built_in">clearInterval</span>(timer);
+          timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">this</span>.name);  <span class="hljs-comment">//my name is window</span>
+          &#125;, <span class="hljs-number">1000</span>)
+     &#125;
+ &#125;
+<span class="hljs-comment">//箭头函数</span>
+<span class="hljs-keyword">var</span> name = <span class="hljs-string">&#x27;my name is window&#x27;</span>;
+  <span class="hljs-keyword">var</span> obj = &#123;
+      name: <span class="hljs-string">&#x27;my name is obj&#x27;</span>,
+      fn: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+          <span class="hljs-keyword">var</span> timer = <span class="hljs-literal">null</span>;
+          <span class="hljs-built_in">clearInterval</span>(timer);
+          timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;
+              <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">this</span>.name);  <span class="hljs-comment">//my name is obj</span>
+          &#125;, <span class="hljs-number">1000</span>)
+     &#125;
+ &#125;
+ <span class="hljs-comment">//其余写法，利用变量赋值this</span>
+ <span class="hljs-keyword">var</span> name = <span class="hljs-string">&quot;my name is window&quot;</span>;
+   <span class="hljs-keyword">var</span> obj = &#123;
+      name: <span class="hljs-string">&#x27;my name is obj&#x27;</span>,
+      self = <span class="hljs-built_in">this</span>; 
+      fn: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+          <span class="hljs-keyword">var</span> timer = <span class="hljs-literal">null</span>;
+          <span class="hljs-built_in">clearInterval</span>(timer);
+          timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;
+              <span class="hljs-built_in">console</span>.log(self.name);  <span class="hljs-comment">//my name is obj</span>
+          &#125;, <span class="hljs-number">1000</span>)
+     &#125;
+ &#125;</code></pre>
             </div>
             <hr>
             <div>
@@ -342,7 +365,7 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/categories/TypeScript/">TypeScript</a>
                     
                   </div>
                 
@@ -350,7 +373,7 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+                      <a class="hover-with-bg" href="/tags/TypeScript/">TypeScript</a>
                     
                   </div>
                 
@@ -363,9 +386,9 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/10/25/typescript-learn-note03/">
+                      <a href="/2020/10/22/network-programming-note1/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TypeScript笔记(三)</span>
+                        <span class="hidden-mobile">各进制数之间的转换</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -373,8 +396,8 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/10/22/network-programming-note1/">
-                        <span class="hidden-mobile">各进制数之间的转换</span>
+                      <a href="/2020/08/12/typescript-learn-note01/">
+                        <span class="hidden-mobile">TypeScript笔记(一)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -536,7 +559,7 @@ const gb &#x3D; tb &lt;&lt; 10;</code></pre>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "几个非常用运算符&nbsp;",
+        "TypeScript笔记(二)&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,
