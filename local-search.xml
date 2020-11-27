@@ -4,7 +4,200 @@
   
   
   <entry>
-    <title>javascript试题收录(四)</title>
+    <title>(Python)实现TextureMerger打包图集</title>
+    <link href="/2020/11/27/python-note006/"/>
+    <url>/2020/11/27/python-note006/</url>
+    
+    <content type="html"><![CDATA[<p>TextureMerger的用法详解，使用命令行实现TextureMerger打包图集。</p><a id="more"></a><p>本例子采用python2.7.16版本</p><p>TextureMerger的用法：<br>    - Texture Merger 的命令行，注意路径必须是绝对路径，路径好像不支持中文<br>    - 命令格式：-p [目录] […] -o [json输出路径] -e [文件筛选正则表达式]<br>    - example: TextureMerger -p e:/01main -o e:/01main.json -e /.*.(png)</p><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><span class="hljs-keyword">import</span> os<span class="hljs-keyword">import</span> zipfile<span class="hljs-keyword">from</span> zlib <span class="hljs-keyword">import</span> crc32<span class="hljs-keyword">import</span> json<span class="hljs-keyword">import</span> sys<span class="hljs-keyword">import</span> shutil<span class="hljs-keyword">import</span> os.path<span class="hljs-comment">#美术资源同级目录</span>URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">tmmckeyactdir</span>(<span class="hljs-params">in_dir, out_dir</span>):</span>    in_dir = in_dir.replace(<span class="hljs-string">&#x27;\\&#x27;</span>, <span class="hljs-string">&#x27;/&#x27;</span>)        e1 = in_dir.rfind(<span class="hljs-string">&#x27;/&#x27;</span>)    dirName = in_dir[e1 + <span class="hljs-number">1</span> : <span class="hljs-built_in">len</span>(in_dir)]    in_dir = URL_HEAD + in_dir    out_dir = URL_HEAD + out_dir           <span class="hljs-comment">#过滤部分不需要打包的文件夹</span>    flag = <span class="hljs-number">0</span>    <span class="hljs-built_in">print</span> in_dir    <span class="hljs-keyword">for</span> dPath, dirs, fs <span class="hljs-keyword">in</span> os.walk(in_dir):        <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> fs:            <span class="hljs-built_in">print</span> file     output_path = out_dir + <span class="hljs-string">&#x27;/&#x27;</span> + dirName + <span class="hljs-string">&#x27;.json&#x27;</span>    <span class="hljs-built_in">print</span> output_path       cmd = <span class="hljs-string">&#x27;TextureMerger -p &#123;in_dir&#125; -o &#123;output_path&#125; -e /(?!&#123;dirName&#125;\.png)\S[\w]+\S\.(png)&#x27;</span>.<span class="hljs-built_in">format</span>(in_dir = in_dir, output_path = output_path, dirName = dirName)    <span class="hljs-built_in">print</span> cmd    os.system(cmd)      <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:      <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; start&quot;</span>    tmmckeyactdir(<span class="hljs-string">&#x27;dirSrc&#x27;</span>, <span class="hljs-string">&#x27;dirSrc&#x27;</span>)    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; end&quot;</span></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+      <category>Egret</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Egret</tag>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Python)利用Python脚本分割json图集</title>
+    <link href="/2020/11/27/python-note005/"/>
+    <url>/2020/11/27/python-note005/</url>
+    
+    <content type="html"><![CDATA[<p>利用Python脚本分割json图集，例如：egret的texturemerger工具打包的图集。</p><a id="more"></a><p>本例子采用python2.7.16版本</p><pre><code class="hljs processing"># -*- coding: utf<span class="hljs-number">-8</span> -*-#!python#利用Python脚本分割json图集<span class="hljs-keyword">import</span> re<span class="hljs-keyword">import</span> json<span class="hljs-keyword">import</span> os, sysfrom PIL <span class="hljs-keyword">import</span> Image#crop函数带的参数为（起始点的横坐标，起始点的纵坐标，宽度，高度）#paste函数的参数为​​（需要修改的图片，粘贴的起始点的横坐标，粘贴的起始点的纵坐标）out_path = <span class="hljs-string">&#x27;D:/Egret/jsonSplit/images/&#x27;</span>_json_filename = <span class="hljs-string">&#x27;D:/Egret/jsonSplit/61buyasuo.json&#x27;</span>_png_filename = <span class="hljs-string">&#x27;D:/Egret/jsonSplit/61buyasuo.png&#x27;</span>def to_list(src_dict):    ret = []    <span class="hljs-keyword">if</span> src_dict.has_key(<span class="hljs-string">&#x27;x&#x27;</span>):        ret.<span class="hljs-built_in">append</span>(src_dict[<span class="hljs-string">&#x27;x&#x27;</span>])    <span class="hljs-keyword">if</span> src_dict.has_key(<span class="hljs-string">&#x27;y&#x27;</span>):        ret.<span class="hljs-built_in">append</span>(src_dict[<span class="hljs-string">&#x27;y&#x27;</span>])    <span class="hljs-keyword">if</span> src_dict.has_key(<span class="hljs-string">&#x27;w&#x27;</span>):        ret.<span class="hljs-built_in">append</span>(src_dict[<span class="hljs-string">&#x27;w&#x27;</span>])    <span class="hljs-keyword">if</span> src_dict.has_key(<span class="hljs-string">&#x27;h&#x27;</span>):        ret.<span class="hljs-built_in">append</span>(src_dict[<span class="hljs-string">&#x27;h&#x27;</span>])    <span class="hljs-keyword">return</span> retdef gen_png_from_json(json_filename, png_filename):    big_image = Image.<span class="hljs-built_in">open</span>(png_filename)    json_dict = json.loads(<span class="hljs-built_in">open</span>(json_filename, <span class="hljs-string">&#x27;r&#x27;</span>).read())    <span class="hljs-keyword">for</span> k, v in json_dict[<span class="hljs-string">&#x27;frames&#x27;</span>].items():        <span class="hljs-built_in">width</span> = <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;w&#x27;</span>])        <span class="hljs-built_in">height</span> = <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;h&#x27;</span>])        <span class="hljs-built_in">box</span> = (            <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;x&#x27;</span>]),            <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;y&#x27;</span>]),            <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;x&#x27;</span>]) + <span class="hljs-built_in">width</span>,            <span class="hljs-built_in">int</span>(v[<span class="hljs-string">&#x27;y&#x27;</span>]) + <span class="hljs-built_in">height</span>,        )        sizelist = [v[<span class="hljs-string">&#x27;w&#x27;</span>], v[<span class="hljs-string">&#x27;h&#x27;</span>]]        rect_on_big = big_image.crop(<span class="hljs-built_in">box</span>)        result_image = Image.<span class="hljs-keyword">new</span>(<span class="hljs-string">&#x27;RGBA&#x27;</span>, sizelist, (<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))        result_box = (            (sizelist[<span class="hljs-number">0</span>] - <span class="hljs-built_in">width</span>) / <span class="hljs-number">2</span>,            (sizelist[<span class="hljs-number">1</span>] - <span class="hljs-built_in">height</span>) / <span class="hljs-number">2</span>,            (sizelist[<span class="hljs-number">0</span>] + <span class="hljs-built_in">width</span>) / <span class="hljs-number">2</span>,            (sizelist[<span class="hljs-number">1</span>] + <span class="hljs-built_in">height</span>) / <span class="hljs-number">2</span>        )        result_image.paste(rect_on_big, result_box, mask=<span class="hljs-number">0</span>)         #<span class="hljs-built_in">print</span> k        outfile = out_path + k + <span class="hljs-string">&#x27;.png&#x27;</span>        result_image.<span class="hljs-built_in">save</span>(outfile)        <span class="hljs-built_in">print</span> <span class="hljs-string">&#x27;generate ---&gt;&#x27;</span> + outfile<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:    gen_png_from_json(_json_filename, _png_filename)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Python)把两份配置相同的地方合并在一起</title>
+    <link href="/2020/11/27/python-note004/"/>
+    <url>/2020/11/27/python-note004/</url>
+    
+    <content type="html"><![CDATA[<p>把两份配置相同的地方合并在一起，以一份最新的为查询对象，去匹配另外一张excel表格。</p><a id="more"></a><p>本例子采用python3.8.0版本</p><pre><code class="hljs haxe"><span class="hljs-meta"># -*- coding: utf-8 -*-</span><span class="hljs-keyword">import</span> re<span class="hljs-keyword">import</span> osfrom os.path <span class="hljs-keyword">import</span> join<span class="hljs-keyword">import</span> xlrd<span class="hljs-keyword">import</span> xlsxwriterdef mergeFunc(path, copy_path, result_path):<span class="hljs-type"></span><span class="hljs-type">    </span># 创建表格    <span class="hljs-keyword">new</span><span class="hljs-type">xlsx</span> = xlsxwriter.Workbook(result_path)     <span class="hljs-meta"># 创建分页</span>    <span class="hljs-keyword">new</span><span class="hljs-type">sheet</span> = <span class="hljs-keyword">new</span><span class="hljs-type">xlsx</span>.add_worksheet(<span class="hljs-string">&quot;src&quot;</span>)    <span class="hljs-meta"># 打开表格</span>    workbook = xlrd.open_workbook(path)     <span class="hljs-meta"># 根据sheet索引或者名称获取sheet内容</span>    sheet_src = workbook.sheet_by_name(<span class="hljs-string">&#x27;src&#x27;</span>)    workbook_copy = xlrd.open_workbook(copy_path)     sheet_src_copy = workbook_copy.sheet_by_name(<span class="hljs-string">&#x27;src&#x27;</span>)    index = <span class="hljs-number">0</span> <span class="hljs-meta"># 记录行数</span>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(sheet_src.nrows):<span class="hljs-type"></span><span class="hljs-type">        key </span>= sheet_src.cell(i, <span class="hljs-number">0</span>).value <span class="hljs-meta">#第一列每一行的数据</span>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(sheet_src_copy.nrows):<span class="hljs-type"></span><span class="hljs-type">            copy_key </span>= sheet_src_copy.cell(j, <span class="hljs-number">0</span>).value            <span class="hljs-meta">#print(copy_key)</span>            <span class="hljs-keyword">if</span> key == copy_key:<span class="hljs-type"></span><span class="hljs-type">                newsheet</span>.write(index, <span class="hljs-number">0</span>, key)                copy_val = sheet_src_copy.cell(j, <span class="hljs-number">1</span>).value <span class="hljs-meta">#第二列每一行的数据</span>                <span class="hljs-keyword">new</span><span class="hljs-type">sheet</span>.write(index, <span class="hljs-number">1</span>, copy_val)                index = index + <span class="hljs-number">1</span>    <span class="hljs-keyword">new</span><span class="hljs-type">xlsx</span>.close()<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:  <span class="hljs-type"></span><span class="hljs-type">    rootpath </span>= os.getcwd()    <span class="hljs-meta"># 路径拼接</span>    path = os.path.join(rootpath,<span class="hljs-string">&#x27;language_src.xlsx&#x27;</span>)    copy_path = os.path.join(rootpath,<span class="hljs-string">&#x27;language_src_replace.xlsx&#x27;</span>)    result_path = os.path.join(rootpath, <span class="hljs-string">&#x27;merge_language_src.xlsx&#x27;</span>)    mergeFunc(path, copy_path, result_path)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Python)对项目文件的注释进行去除</title>
+    <link href="/2020/11/27/python-note003/"/>
+    <url>/2020/11/27/python-note003/</url>
+    
+    <content type="html"><![CDATA[<p>对项目文件的注释进行去除。</p><a id="more"></a><p>本例子采用python3.8.0版本</p><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><span class="hljs-comment">#对Js进行删除注释的操作</span><span class="hljs-keyword">import</span> re<span class="hljs-keyword">import</span> os<span class="hljs-keyword">from</span> os.path <span class="hljs-keyword">import</span> join<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">checkline</span>(<span class="hljs-params">line</span>):</span>    <span class="hljs-comment">#^(\s)*//：匹配任何以N个空白字符+‘//’开头的内容</span>    <span class="hljs-comment">#.*$：匹配除换行符之外的任意字符结尾</span>    <span class="hljs-comment">#结果匹配“//啊啊啊啊啊”这种类型</span>    single = <span class="hljs-string">r&#x27;\/\/(.*?)$&#x27;</span>    line = re.sub(single, <span class="hljs-string">&quot;&quot;</span>, line)    <span class="hljs-comment">#匹配/*****/这种类型的注释</span>    multiple = <span class="hljs-string">r&#x27;/\*.*?\*/&#x27;</span>    line = re.sub(multiple, <span class="hljs-string">&quot;&quot;</span>, line)    <span class="hljs-comment">#暂时没看懂跟第一个的区别是什么</span>    right = <span class="hljs-string">r&#x27;(?P&lt;bef&gt;[;\&#125;\s])\s?//.*$&#x27;</span>    res = re.search(right, line)    <span class="hljs-keyword">if</span> res:        dt1 = res.groupdict()        line = re.sub(right, dt1[<span class="hljs-string">&#x27;bef&#x27;</span>] + <span class="hljs-string">&quot;&quot;</span>, line)    <span class="hljs-comment">#匹配console.log打印</span>    con = <span class="hljs-string">r&#x27;console\.log\(.*?\);*?&#x27;</span>    line = re.sub(con, <span class="hljs-string">&quot;&quot;</span>, line)    deb = <span class="hljs-string">r&#x27;debug\(.*?\);*&#x27;</span>    line = re.sub(deb, <span class="hljs-string">&quot;&quot;</span>, line)           <span class="hljs-keyword">return</span> line<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inline</span>(<span class="hljs-params"><span class="hljs-built_in">dir</span></span>):</span>    <span class="hljs-keyword">for</span> root, dirs, files <span class="hljs-keyword">in</span> os.walk(<span class="hljs-built_in">dir</span>):        <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> files:            <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;.ts&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> filename:                <span class="hljs-keyword">continue</span>            <span class="hljs-comment">#进入文件开始执行脚本</span>            file_url = join(root, filename)            fin = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;r&#x27;</span>, encoding = <span class="hljs-string">&quot;UTF-8&quot;</span>)            lines = fin.readlines()            fin.close()            fout = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;w&#x27;</span>, encoding = <span class="hljs-string">&quot;UTF-8&quot;</span>)            <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines:                line = checkline(line)                fout.write(line)            fout.close()<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">moreline</span>(<span class="hljs-params"><span class="hljs-built_in">dir</span></span>):</span>    <span class="hljs-keyword">for</span> root, dirs, files <span class="hljs-keyword">in</span> os.walk(<span class="hljs-built_in">dir</span>):        <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> files:            <span class="hljs-comment">#如果不是.exml文件直接忽略</span>            <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;.ts&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> filename:                <span class="hljs-keyword">continue</span>            <span class="hljs-comment">#进入文件开始执行脚本</span>            file_url = join(root, filename)            fin = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;r&#x27;</span>, encoding = <span class="hljs-string">&quot;UTF-8&quot;</span>)            lines = fin.readlines()            fin.close()            fout = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;w&#x27;</span>, encoding = <span class="hljs-string">&quot;UTF-8&quot;</span>)            explain = <span class="hljs-number">0</span>            <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines:                <span class="hljs-comment">#[^(\*/)]*：不以*/结尾</span>                <span class="hljs-comment"># 跨行注释</span>                start = <span class="hljs-string">r&#x27;^(\s)*/\*+[^(\*/)]*&#x27;</span>                <span class="hljs-keyword">if</span> re.search(start,line):                    explain = <span class="hljs-number">1</span>                    <span class="hljs-keyword">continue</span>                <span class="hljs-keyword">if</span> explain:                    <span class="hljs-comment">#.*\*/\s?$：以任意字符+*/结尾</span>                    end=<span class="hljs-string">r&#x27;.*\*/\s?$&#x27;</span>                    <span class="hljs-keyword">if</span> re.search(end, line):                        explain = <span class="hljs-number">0</span>                        <span class="hljs-keyword">continue</span>                <span class="hljs-keyword">if</span> explain == <span class="hljs-number">0</span>:                    fout.write(line)            fout.close()    <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:      rootpath = os.getcwd()        print(<span class="hljs-string">&quot;simplify inline start&quot;</span>)    inline(<span class="hljs-string">&#x27;src&#x27;</span>)    print(<span class="hljs-string">&quot;simplify inline end&quot;</span>)    print(<span class="hljs-string">&quot;simplify moreline start&quot;</span>)    moreline(<span class="hljs-string">&#x27;src&#x27;</span>)    print(<span class="hljs-string">&quot;simplify moreline end&quot;</span>)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Python)导出项目文件里的中文</title>
+    <link href="/2020/11/24/python-note002/"/>
+    <url>/2020/11/24/python-note002/</url>
+    
+    <content type="html"><![CDATA[<p>导出项目代码文件里的带中文字眼的字符串。</p><a id="more"></a><p>本例子采用python3.8.0版本</p><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><span class="hljs-keyword">import</span> os<span class="hljs-keyword">from</span> os.path <span class="hljs-keyword">import</span> join<span class="hljs-keyword">import</span> re<span class="hljs-keyword">import</span> xlsxwriter<span class="hljs-keyword">from</span> functools <span class="hljs-keyword">import</span> cmp_to_keydataArr = []<span class="hljs-comment"># pattern1 = r&#x27;(&quot;|\&#x27;|`)(.*?[\u4e00-\u9fa5].*?)\1&#x27;</span><span class="hljs-comment"># 匹配规则 挺麻烦 只能折中了</span>pattern1 = <span class="hljs-string">r&#x27;(&quot;|\&#x27;|`)(.*?)(?&lt;!\\)\1&#x27;</span> pattern2 = <span class="hljs-string">r&#x27;(.*)([\u4e00-\u9fa5]+)\1&#x27;</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Point</span>():</span>    <span class="hljs-keyword">pass</span><span class="hljs-comment">#排序</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sortFunc</span>(<span class="hljs-params">a, b</span>):</span>    <span class="hljs-keyword">return</span> b[<span class="hljs-string">&#x27;cv&#x27;</span>] - a[<span class="hljs-string">&#x27;cv&#x27;</span>]        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read_line</span>(<span class="hljs-params">line</span>):</span>    matches = re.findall(pattern1, line)    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> matches:        item = item[<span class="hljs-number">1</span>]        item = <span class="hljs-built_in">str</span>(item)        checkResult = re.findall(pattern2, item)        <span class="hljs-keyword">if</span> checkResult:            <span class="hljs-comment">#print(item)</span>            item = <span class="hljs-string">&quot;$start &quot;</span> + item + <span class="hljs-string">&quot; $end&quot;</span>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(p, item):                num = <span class="hljs-built_in">getattr</span>(p, item)                <span class="hljs-built_in">setattr</span>(p, item, num+<span class="hljs-number">1</span>)            <span class="hljs-keyword">else</span>:                <span class="hljs-built_in">setattr</span>(p, item, <span class="hljs-number">1</span>)    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read_file</span>(<span class="hljs-params"><span class="hljs-built_in">dir</span></span>):</span>    <span class="hljs-keyword">for</span> root, dirs, files <span class="hljs-keyword">in</span> os.walk(<span class="hljs-built_in">dir</span>):        <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> files:            print(filename)            <span class="hljs-comment">#如果不是.exml文件直接忽略</span>            <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;.ts&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> filename:                <span class="hljs-keyword">continue</span>            <span class="hljs-comment">#进入文件开始执行脚本</span>            file_url = join(root, filename)            f = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;r&#x27;</span>, encoding = <span class="hljs-string">&quot;UTF-8&quot;</span>)            line = f.readline()            <span class="hljs-keyword">while</span> line:                read_line(line)                line = f.readline()            f.close()    <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:      print(<span class="hljs-string">&quot;simplify start&quot;</span>)    rootpath = os.getcwd()    <span class="hljs-comment"># 路径拼接</span>    path = os.path.join(rootpath,<span class="hljs-string">&#x27;language_src.xlsx&#x27;</span>)    <span class="hljs-comment"># 创建表格</span>    newxlsx = xlsxwriter.Workbook(path)     <span class="hljs-comment"># 创建分页</span>    newsheet = newxlsx.add_worksheet(<span class="hljs-string">&quot;xml&quot;</span>)    <span class="hljs-comment">#初始化一个对象，用来记录资源频率</span>    p = Point()        read_file(<span class="hljs-string">&#x27;src&#x27;</span>)        fout = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;src_chinese.txt&quot;</span>,<span class="hljs-string">&#x27;w&#x27;</span>)    <span class="hljs-comment">#为了排序                </span>    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> p.__dict__.items():        dataArr.append(&#123;<span class="hljs-string">&#x27;ck&#x27;</span>:k, <span class="hljs-string">&#x27;cv&#x27;</span>:v&#125;)    dataArr.sort(key=cmp_to_key(sortFunc))    <span class="hljs-comment">#打印成文本    </span>    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> dataArr:        fout.write(<span class="hljs-string">&#x27;\n&#x27;</span>.join([<span class="hljs-string">&#x27;使用次数：%d      文本：%s&#x27;</span> % (item[<span class="hljs-string">&#x27;cv&#x27;</span>], item[<span class="hljs-string">&#x27;ck&#x27;</span>].replace(<span class="hljs-string">&quot;$start &quot;</span>, <span class="hljs-string">&quot;&quot;</span>).replace(<span class="hljs-string">&quot; $end&quot;</span>, <span class="hljs-string">&quot;&quot;</span>))]))        fout.write(<span class="hljs-string">&#x27;\n&#x27;</span>)    fout.close()        <span class="hljs-comment"># 导入excel表</span>    index = <span class="hljs-number">0</span>    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> dataArr:        newsheet.write(index, <span class="hljs-number">0</span>, item[<span class="hljs-string">&quot;ck&quot;</span>].replace(<span class="hljs-string">&quot;$start &quot;</span>, <span class="hljs-string">&quot;&quot;</span>).replace(<span class="hljs-string">&quot; $end&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)) <span class="hljs-comment">#行，列，数据</span>        index = index + <span class="hljs-number">1</span>    newxlsx.close()        print(<span class="hljs-string">&quot;simplify end&quot;</span>)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Python)对excel的简单处理</title>
+    <link href="/2020/11/23/python-note001/"/>
+    <url>/2020/11/23/python-note001/</url>
+    
+    <content type="html"><![CDATA[<p>对excel的简单处理。</p><a id="more"></a><p>本例子采用python3.8.0版本</p><pre><code class="hljs leaf"># -*- coding: utf-8 -*-import reimport osfrom os.path import joinimport xlrdif __name__ == &#x27;__main__&#x27;:      rootpath = os.getcwd()    # 路径拼接    path = os.path.join(rootpath,&#x27;language_src.xlsx&#x27;)    # 创建表格    workbook = xlrd.open_workbook(path)     # 获取所有sheet    <span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-variable">workbook</span>.<span class="hljs-variable">sheet_names</span>()</span></span>) # [u&#x27;sheet1&#x27;, u&#x27;sheet2&#x27;]    #获取sheet2    #sheet2_name= workbook.sheet_names()[1]    <span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-variable">sheet2_name</span>)</span></span>    # 根据sheet索引或者名称获取sheet内容    sheet_src = workbook.sheet_by_name(&#x27;src&#x27;)    <span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-variable">sheet_src</span>.<span class="hljs-variable">name</span>, <span class="hljs-variable">sheet_src</span>.<span class="hljs-variable">nrows</span>, <span class="hljs-variable">sheet_src</span>.<span class="hljs-variable">ncols</span>)</span></span>    for i in range(sheet_src.nrows):        <span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-variable">sheet_src</span>.<span class="hljs-variable">row_values</span>(<span class="hljs-variable">i</span>)</span></span>) //第一列的数据        <span class="hljs-function"><span class="hljs-keyword">#</span><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-variable">sheet_src</span>.<span class="hljs-variable">cell</span>(<span class="hljs-variable">i</span>, 0)</span></span>.value) //第一列每一行的数据</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>脚本</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>(Egret)堆栈溢出的情况处理</title>
+    <link href="/2020/11/21/egret-note01/"/>
+    <url>/2020/11/21/egret-note01/</url>
+    
+    <content type="html"><![CDATA[<p>Egret堆栈溢出提示：</p><pre><code class="hljs asciidoc">......FATAL ERROR: CALL<span class="hljs-emphasis">_AND_</span>RETRY<span class="hljs-emphasis">_0 Allocation failed process out of memory</span><span class="hljs-emphasis">......</span></code></pre><a id="more"></a><p><b>问题描述：</b>编译时内存溢出, 因为白鹭编译时使用的自带的32位nodejs, 可换自己安装的64位的nodejs<br><b>解决方法：</b><br>    1. 安装个64位的nodejs, 如果安装在D:\Program Files\nodejs<br>    2. 修改C:\Users\登录用户名\AppData\Roaming\npm\egret.cmd文件, 设置路径为我们安装的64位nodejs<br>    3. 使用自己安装在d盘的 D:\Program Files\nodejs目录下在的node.exe与D:\Program Files\nodejs\node_modules\npm文件夹替换掉C:\Program Files (x86)\Egret\EgretLauncher\resources\app\engine\win目录下面的node.exe与npm文件夹</p><p>文件截图：<img src="/img/egret_note01.png"></p><pre><code class="hljs less"><span class="hljs-variable">@SET</span> NODE64=<span class="hljs-attribute">D</span>:\nodejs<span class="hljs-variable">@IF</span> EXIST <span class="hljs-string">&quot;%~dp0node_modules\egret\EgretEngine&quot;</span> (  FOR /F <span class="hljs-string">&quot;usebackq delims=&quot;</span> %%a in (<span class="hljs-string">&quot;%~dp0node_modules\egret\EgretEngine&quot;</span>) do @(set EGRET=%%a)) ELSE (  set EGRET=%~dp0node_modules)<span class="hljs-variable">@IF</span> EXIST <span class="hljs-string">&quot;%NODE64%\node.exe&quot;</span> (  <span class="hljs-string">&quot;%NODE64%\node.exe&quot;</span> --no-deprecation --max-old-space-size=<span class="hljs-number">4096</span> <span class="hljs-string">&quot;%EGRET%\selector.js&quot;</span> %*) ELSE (  <span class="hljs-variable">@SETLOCAL</span>  <span class="hljs-variable">@SET</span> PATHEXT=%<span class="hljs-attribute">PATHEXT</span>:;.JS;=;%  node --no-deprecation --max-old-space-size=<span class="hljs-number">4096</span> <span class="hljs-string">&quot;%EGRET%\selector.js&quot;</span> %*)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Egret</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Egret</tag>
+      
+      <tag>堆栈溢出</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Javascript试题收录(四)</title>
     <link href="/2020/11/20/javascript-learn-test04/"/>
     <url>/2020/11/20/javascript-learn-test04/</url>
     
@@ -13,16 +206,16 @@
     
     <categories>
       
-      <category>javascript</category>
+      <category>Javascript</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>javascript</tag>
+      <tag>Javascript</tag>
       
-      <tag>javascript试题收录</tag>
+      <tag>Javascript试题收录</tag>
       
     </tags>
     
@@ -31,7 +224,7 @@
   
   
   <entry>
-    <title>javascript试题收录(三)</title>
+    <title>Javascript试题收录(三)</title>
     <link href="/2020/11/01/javascript-learn-test03/"/>
     <url>/2020/11/01/javascript-learn-test03/</url>
     
@@ -40,16 +233,16 @@
     
     <categories>
       
-      <category>javascript</category>
+      <category>Javascript</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>javascript</tag>
+      <tag>Javascript</tag>
       
-      <tag>javascript试题收录</tag>
+      <tag>Javascript试题收录</tag>
       
     </tags>
     
@@ -58,25 +251,25 @@
   
   
   <entry>
-    <title>javascript试题收录(二)</title>
+    <title>Javascript试题收录(二)</title>
     <link href="/2020/11/01/javascript-learn-test02/"/>
     <url>/2020/11/01/javascript-learn-test02/</url>
     
-    <content type="html"><![CDATA[<p>settimeout 与 serInterval的区别。</p><a id="more"></a><h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">    <span class="hljs-keyword">let</span> timer1 = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;</span><span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;serInterval&quot;</span>);</span>    &#125;, 1000);<span class="javascript">    <span class="hljs-keyword">let</span> timer2 = <span class="hljs-function">() =&gt;</span> &#123;</span><span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;setTimeout&quot;</span>);</span><span class="javascript">        <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span>    &#125;<span class="javascript">    <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><p>setTimeout 和 serInterval 都是延迟执行，后面的时间是延迟加入执行队列的时间</p><p>serInterval 可能受网络波动等影响，后一个间歇调用可能在前一个间歇调用结束之前调用，一般很少调用setInterval</p><p>想要间歇性地调用某个方法，可以使用setTimeout，在执行结束后再调用自身</p>]]></content>
+    <content type="html"><![CDATA[<p>settimeout 与 serInterval的区别。</p><a id="more"></a><h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">    <span class="hljs-keyword">let</span> timer1 = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;</span><span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;serInterval&quot;</span>);</span>    &#125;, 1000);<span class="javascript">    <span class="hljs-keyword">let</span> timer2 = <span class="hljs-function">() =&gt;</span> &#123;</span><span class="javascript">        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;setTimeout&quot;</span>);</span><span class="javascript">        <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span>    &#125;<span class="javascript">    <span class="hljs-built_in">setTimeout</span>(timer2, <span class="hljs-number">1000</span>);</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><p>setTimeout 和 serInterval 都是延迟执行，后面的时间是延迟加入执行队列的时间</p><p><b style="color: red;">setInterval 可能受网络波动等影响，后一个间歇调用可能在前一个间歇调用结束之前调用</b>，一般很少调用setInterval</p><p>想要间歇性地调用某个方法，可以使用setTimeout，在执行结束后再调用自身</p>]]></content>
     
     
     <categories>
       
-      <category>javascript</category>
+      <category>Javascript</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>javascript</tag>
+      <tag>Javascript</tag>
       
-      <tag>javascript试题收录</tag>
+      <tag>Javascript试题收录</tag>
       
     </tags>
     
@@ -85,7 +278,7 @@
   
   
   <entry>
-    <title>javascript试题收录(一)</title>
+    <title>Javascript试题收录(一)</title>
     <link href="/2020/11/01/javascript-learn-test01/"/>
     <url>/2020/11/01/javascript-learn-test01/</url>
     
@@ -94,16 +287,16 @@
     
     <categories>
       
-      <category>javascript</category>
+      <category>Javascript</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>javascript</tag>
+      <tag>Javascript</tag>
       
-      <tag>javascript试题收录</tag>
+      <tag>Javascript试题收录</tag>
       
     </tags>
     
@@ -137,11 +330,11 @@
   
   
   <entry>
-    <title>几个非常用运算符</title>
-    <link href="/2020/10/22/network-programming-note2/"/>
-    <url>/2020/10/22/network-programming-note2/</url>
+    <title>各进制数之间的转换</title>
+    <link href="/2020/10/22/network-programming-note1/"/>
+    <url>/2020/10/22/network-programming-note1/</url>
     
-    <content type="html"><![CDATA[<p>一些平时不常用到的运算符，但却经常见到的运算符。</p><a id="more"></a><h3 id="二进制转化"><a href="#二进制转化" class="headerlink" title="二进制转化"></a>二进制转化</h3><p style="text-indent:2rem;">以下运算符涉及二进制转化，此处说明一下十进制转换为二进制的方法：除二取余法。（除以2取余数，余数逆序排列.。二进制数一般为32位，不够的往前面添0。）</p><pre><code class="hljs [javascript]">&#x2F;&#x2F;十进制数转换为二进制&#x2F;&#x2F;例子一：5&#x2F;&#x2F;5&#x2F;2 &#x3D; 2 ... 1&#x2F;&#x2F;2&#x2F;2 &#x3D; 1 ... 0&#x2F;&#x2F;1&#x2F;2 &#x3D; 0 ... 1&#x2F;&#x2F;因此，（十进制数）5转化为（二进制数）就是101，二进制数一般为32位，不够的往前面添0。&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;例子二：24&#x2F;&#x2F;24&#x2F;2 &#x3D; 12 ... 0&#x2F;&#x2F;12&#x2F;2 &#x3D; 6  ... 0&#x2F;&#x2F;6&#x2F;2 &#x3D; 3   ... 0&#x2F;&#x2F;3&#x2F;2 &#x3D; 1   ... 1&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1&#x2F;&#x2F;因此，（十进制数）24转化为（二进制数）就是11000，二进制数一般为32位，不够的往前面添0。&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;例子三：20&#x2F;&#x2F;20&#x2F;2 &#x3D; 10 ... 0&#x2F;&#x2F;10&#x2F;2 &#x3D; 5  ... 0&#x2F;&#x2F;5&#x2F;2 &#x3D; 2   ... 1&#x2F;&#x2F;2&#x2F;2 &#x3D; 1   ... 0&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 0100</code></pre><h3 id="“-lt-lt-”运算符"><a href="#“-lt-lt-”运算符" class="headerlink" title="“&lt;&lt;”运算符"></a>“&lt;&lt;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&lt;&lt;&quot;运算符：用于对二进制数左移多少位。1 &lt;&lt; 0 &#x2F;&#x2F;结果：11 &lt;&lt; 1 &#x2F;&#x2F;结果：21 &lt;&lt; 2 &#x2F;&#x2F;结果：41 &lt;&lt; 10 &#x2F;&#x2F;结果：10245 &lt;&lt; 10 &#x2F;&#x2F;结果：5120&#x2F;&#x2F;由上可得x &lt;&lt; y 相当于 x * 2^y&#x2F;&#x2F;较为常用的例子：const kb &#x3D; 1 &lt;&lt; 10; &#x2F;&#x2F;1024const mb &#x3D; kb &lt;&lt; 10; &#x2F;&#x2F;1048576const tb &#x3D; mb &lt;&lt; 10; const gb &#x3D; tb &lt;&lt; 10;</code></pre><h3 id="“-amp-”运算符"><a href="#“-amp-”运算符" class="headerlink" title="“&amp;”运算符"></a>“&amp;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&amp;&quot;运算符：用于对两个二进制操作数逐位“位与”进行比较。&#x2F;&#x2F;“位与”即1&amp;&amp;1&#x3D;&#x3D;1, 1&amp;&amp;0&#x3D;&#x3D;0, 0&amp;&amp;0&#x3D;&#x3D;0&#x2F;&#x2F;平时我们使用的数字都是十进制数，该方法是对转化后的二进制数进行比较。&#x2F;&#x2F;&quot;&amp;&quot;运算符就是比较二进制中为true的值提取出来，然后逐位计算true或false。24 &amp; 5 &#x2F;&#x2F;结果：0&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 0&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0000 000024 &amp; 20 &#x2F;&#x2F;结果：16&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;数值20：0000 0000 0000 0000  0000 0000 0001 0100&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 0000</code></pre><h3 id="“-”运算符"><a href="#“-”运算符" class="headerlink" title="“^”运算符"></a>“^”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;^&quot;运算符：用于对两个二进制操作数逐位“位异或”进行比较。&#x2F;&#x2F;“位异或”即1&amp;&amp;0&#x3D;&#x3D;1 1&amp;&amp;1&#x3D;&#x3D;0 0&amp;&amp;0&#x3D;&#x3D;024 &amp; 5 &#x2F;&#x2F;结果：29&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre><h3 id="“-”运算符-1"><a href="#“-”运算符-1" class="headerlink" title="“|”运算符"></a>“|”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;|&quot;运算符用于对两个二进制操作数逐位进行“位或”比较。&#x2F;&#x2F;“位与”即1||1&#x3D;&#x3D;1, 1||0&#x3D;&#x3D;1, 0||0&#x3D;&#x3D;0&#x2F;&#x2F;其他与&quot;&amp;&quot;运算符相似24 &amp; 5 &#x2F;&#x2F;结果：29&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre><h3 id="“-”运算符-2"><a href="#“-”运算符-2" class="headerlink" title="“~”运算符"></a>“~”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;~&quot;运算符：简单理解为取负运算，再减去1~24 &#x2F;&#x2F;结果：-25 即：-24-1~10 &#x2F;&#x2F;结果：-11 即：-10-1</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>常用的各种进制数之间的转换公式。</p><a id="more"></a><h2 id="其他进制数转换为10进制数"><a href="#其他进制数转换为10进制数" class="headerlink" title="其他进制数转换为10进制数"></a>其他进制数转换为10进制数</h2><p>其他进制数转10进制数算法：从尾巴开始算起，依次乘以对应数值（例如2进制除数就是2,16进制除数就是16）的0~n次方（n值为尾巴算起的第几位-1，这里的尾巴起点仅代表个位数，如果有小数，则从-1次方开始算起）</p><pre><code class="hljs javascript"><span class="hljs-comment">//16进制数：0x07ff</span><span class="hljs-comment">//转化为10进制数的算法：f*16^0 + f*16^1 + 7*16^2 = 2047</span><span class="hljs-comment">//8进制数：52</span><span class="hljs-comment">//转化为10进制数的算法：2*8^0 + 5*8^1 = 42</span><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">otherToVal10</span>(<span class="hljs-params">num, val</span>)</span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">let</span> arr = [];<span class="hljs-keyword">let</span> numStr = num.toString();<span class="hljs-built_in">console</span>.log(numStr)arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) : arr.concat(numStr.split(<span class="hljs-string">&quot;.&quot;</span>));<span class="hljs-keyword">let</span> squareMax = arr[<span class="hljs-number">0</span>].length - <span class="hljs-number">1</span>;<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">0</span>].length; i++)&#123;result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">0</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, squareMax - i);&#125;<span class="hljs-keyword">if</span> (arr.length &gt; <span class="hljs-number">1</span>)&#123;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">1</span>].length; i++)&#123;result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">1</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, <span class="hljs-number">0</span> - <span class="hljs-number">1</span> - i);&#125;&#125;<span class="hljs-keyword">return</span> result;&#125;</code></pre><h2 id="10进制数转换为其他进制数"><a href="#10进制数转换为其他进制数" class="headerlink" title="10进制数转换为其他进制数"></a>10进制数转换为其他进制数</h2><p>10进制数转化为其他进制，只需要除以对应数值（例如2进制除数就是2,16进制除数就是16），记下商和余数；然后用商除以除数，继续记下商和余数；重复以上步骤直到商为0为止。然后余数逆序排列，就是对应要转化的进制数的结果。</p><pre><code class="hljs reasonml"><span class="hljs-comment">//10进制数：100</span><span class="hljs-comment">//转化为2进制数：</span><span class="hljs-comment">/**</span><span class="hljs-comment">* 100 / 2   商：50 余：0</span><span class="hljs-comment">*  50 / 2   商：25 余：0</span><span class="hljs-comment">*  25 / 2   商：12 余：1</span><span class="hljs-comment">*  12 / 2   商： 6 余：0</span><span class="hljs-comment">*   6 / 2   商： 3 余：0</span><span class="hljs-comment">*   3 / 2   商： 1 余：1</span><span class="hljs-comment">*   1 / 2   商： 0 余：1</span><span class="hljs-comment">**/</span><span class="hljs-comment">//结果：1100100</span><span class="hljs-comment">//10进制数：100</span><span class="hljs-comment">//转化为16进制数：</span><span class="hljs-comment">/**</span><span class="hljs-comment">* 100 / 16  商：6 余：4</span><span class="hljs-comment">*   6 / 16  商：0 余：6</span><span class="hljs-comment">**/</span><span class="hljs-comment">//结果：64</span><span class="hljs-keyword">function</span> <span class="hljs-constructor">Val10ToVal(<span class="hljs-params">num</span>, <span class="hljs-params">val</span>)</span>&#123;<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<span class="hljs-keyword">let</span> remainderArr = <span class="hljs-literal">[]</span>;<span class="hljs-keyword">do</span> &#123;<span class="hljs-keyword">let</span> remainder = num % <span class="hljs-keyword">val</span>;remainderArr.push(remainder);num = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Math</span>.</span></span>floor(num<span class="hljs-operator"> / </span><span class="hljs-keyword">val</span>);&#125;<span class="hljs-keyword">while</span> (num != <span class="hljs-number">0</span>)console.log(remainderArr);remainderArr = remainderArr.reverse<span class="hljs-literal">()</span>;result = <span class="hljs-constructor">Number(<span class="hljs-params">remainderArr</span>.<span class="hljs-params">join</span>(<span class="hljs-string">&quot;&quot;</span>)</span>);return result;&#125;</code></pre>]]></content>
     
     
     <categories>
@@ -162,11 +355,11 @@
   
   
   <entry>
-    <title>各进制数之间的转换</title>
-    <link href="/2020/10/22/network-programming-note1/"/>
-    <url>/2020/10/22/network-programming-note1/</url>
+    <title>几个非常用运算符</title>
+    <link href="/2020/10/22/network-programming-note2/"/>
+    <url>/2020/10/22/network-programming-note2/</url>
     
-    <content type="html"><![CDATA[<p>常用的各种进制数之间的转换公式。</p><a id="more"></a><h2 id="其他进制数转换为10进制数"><a href="#其他进制数转换为10进制数" class="headerlink" title="其他进制数转换为10进制数"></a>其他进制数转换为10进制数</h2><p>其他进制数转10进制数算法：从尾巴开始算起，依次乘以对应数值（例如2进制除数就是2,16进制除数就是16）的0~n次方（n值为尾巴算起的第几位-1，这里的尾巴起点仅代表个位数，如果有小数，则从-1次方开始算起）</p><pre><code class="hljs javascript"><span class="hljs-comment">//16进制数：0x07ff</span><span class="hljs-comment">//转化为10进制数的算法：f*16^0 + f*16^1 + 7*16^2 = 2047</span><span class="hljs-comment">//8进制数：52</span><span class="hljs-comment">//转化为10进制数的算法：2*8^0 + 5*8^1 = 42</span><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">otherToVal10</span>(<span class="hljs-params">num, val</span>)</span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">let</span> arr = [];<span class="hljs-keyword">let</span> numStr = num.toString();<span class="hljs-built_in">console</span>.log(numStr)arr = <span class="hljs-built_in">parseInt</span>(num) == num? arr.push(numStr) : arr.concat(numStr.split(<span class="hljs-string">&quot;.&quot;</span>));<span class="hljs-keyword">let</span> squareMax = arr[<span class="hljs-number">0</span>].length - <span class="hljs-number">1</span>;<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">0</span>].length; i++)&#123;result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">0</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, squareMax - i);&#125;<span class="hljs-keyword">if</span> (arr.length &gt; <span class="hljs-number">1</span>)&#123;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; arr[<span class="hljs-number">1</span>].length; i++)&#123;result += <span class="hljs-built_in">Number</span>(arr[<span class="hljs-number">1</span>][i]) * <span class="hljs-built_in">Math</span>.pow(jinzhi, <span class="hljs-number">0</span> - <span class="hljs-number">1</span> - i);&#125;&#125;<span class="hljs-keyword">return</span> result;&#125;</code></pre><h2 id="10进制数转换为其他进制数"><a href="#10进制数转换为其他进制数" class="headerlink" title="10进制数转换为其他进制数"></a>10进制数转换为其他进制数</h2><p>10进制数转化为其他进制，只需要除以对应数值（例如2进制除数就是2,16进制除数就是16），记下商和余数；然后用商除以除数，继续记下商和余数；重复以上步骤直到商为0为止。然后余数逆序排列，就是对应要转化的进制数的结果。</p><pre><code class="hljs reasonml"><span class="hljs-comment">//10进制数：100</span><span class="hljs-comment">//转化为2进制数：</span><span class="hljs-comment">/**</span><span class="hljs-comment">* 100 / 2   商：50 余：0</span><span class="hljs-comment">*  50 / 2   商：25 余：0</span><span class="hljs-comment">*  25 / 2   商：12 余：1</span><span class="hljs-comment">*  12 / 2   商： 6 余：0</span><span class="hljs-comment">*   6 / 2   商： 3 余：0</span><span class="hljs-comment">*   3 / 2   商： 1 余：1</span><span class="hljs-comment">*   1 / 2   商： 0 余：1</span><span class="hljs-comment">**/</span><span class="hljs-comment">//结果：1100100</span><span class="hljs-comment">//10进制数：100</span><span class="hljs-comment">//转化为16进制数：</span><span class="hljs-comment">/**</span><span class="hljs-comment">* 100 / 16  商：6 余：4</span><span class="hljs-comment">*   6 / 16  商：0 余：6</span><span class="hljs-comment">**/</span><span class="hljs-comment">//结果：64</span><span class="hljs-keyword">function</span> <span class="hljs-constructor">Val10ToVal(<span class="hljs-params">num</span>, <span class="hljs-params">val</span>)</span>&#123;<span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<span class="hljs-keyword">let</span> remainderArr = <span class="hljs-literal">[]</span>;<span class="hljs-keyword">do</span> &#123;<span class="hljs-keyword">let</span> remainder = num % <span class="hljs-keyword">val</span>;remainderArr.push(remainder);num = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Math</span>.</span></span>floor(num<span class="hljs-operator"> / </span><span class="hljs-keyword">val</span>);&#125;<span class="hljs-keyword">while</span> (num != <span class="hljs-number">0</span>)console.log(remainderArr);remainderArr = remainderArr.reverse<span class="hljs-literal">()</span>;result = <span class="hljs-constructor">Number(<span class="hljs-params">remainderArr</span>.<span class="hljs-params">join</span>(<span class="hljs-string">&quot;&quot;</span>)</span>);return result;&#125;</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>一些平时不常用到的运算符，但却经常见到的运算符。</p><a id="more"></a><h3 id="二进制转化"><a href="#二进制转化" class="headerlink" title="二进制转化"></a>二进制转化</h3><p style="text-indent:2rem;">以下运算符涉及二进制转化，此处说明一下十进制转换为二进制的方法：除二取余法。（除以2取余数，余数逆序排列.。二进制数一般为32位，不够的往前面添0。）</p><pre><code class="hljs [javascript]">&#x2F;&#x2F;十进制数转换为二进制&#x2F;&#x2F;例子一：5&#x2F;&#x2F;5&#x2F;2 &#x3D; 2 ... 1&#x2F;&#x2F;2&#x2F;2 &#x3D; 1 ... 0&#x2F;&#x2F;1&#x2F;2 &#x3D; 0 ... 1&#x2F;&#x2F;因此，（十进制数）5转化为（二进制数）就是101，二进制数一般为32位，不够的往前面添0。&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;例子二：24&#x2F;&#x2F;24&#x2F;2 &#x3D; 12 ... 0&#x2F;&#x2F;12&#x2F;2 &#x3D; 6  ... 0&#x2F;&#x2F;6&#x2F;2 &#x3D; 3   ... 0&#x2F;&#x2F;3&#x2F;2 &#x3D; 1   ... 1&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1&#x2F;&#x2F;因此，（十进制数）24转化为（二进制数）就是11000，二进制数一般为32位，不够的往前面添0。&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;例子三：20&#x2F;&#x2F;20&#x2F;2 &#x3D; 10 ... 0&#x2F;&#x2F;10&#x2F;2 &#x3D; 5  ... 0&#x2F;&#x2F;5&#x2F;2 &#x3D; 2   ... 1&#x2F;&#x2F;2&#x2F;2 &#x3D; 1   ... 0&#x2F;&#x2F;1&#x2F;2 &#x3D; 0   ... 1&#x2F;&#x2F;即0000 0000 0000 0000  0000 0000 0001 0100</code></pre><h3 id="“-lt-lt-”运算符"><a href="#“-lt-lt-”运算符" class="headerlink" title="“&lt;&lt;”运算符"></a>“&lt;&lt;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&lt;&lt;&quot;运算符：用于对二进制数左移多少位。1 &lt;&lt; 0 &#x2F;&#x2F;结果：11 &lt;&lt; 1 &#x2F;&#x2F;结果：21 &lt;&lt; 2 &#x2F;&#x2F;结果：41 &lt;&lt; 10 &#x2F;&#x2F;结果：10245 &lt;&lt; 10 &#x2F;&#x2F;结果：5120&#x2F;&#x2F;由上可得x &lt;&lt; y 相当于 x * 2^y&#x2F;&#x2F;较为常用的例子：const kb &#x3D; 1 &lt;&lt; 10; &#x2F;&#x2F;1024const mb &#x3D; kb &lt;&lt; 10; &#x2F;&#x2F;1048576const tb &#x3D; mb &lt;&lt; 10; const gb &#x3D; tb &lt;&lt; 10;</code></pre><h3 id="“-amp-”运算符"><a href="#“-amp-”运算符" class="headerlink" title="“&amp;”运算符"></a>“&amp;”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;&amp;&quot;运算符：用于对两个二进制操作数逐位“位与”进行比较。&#x2F;&#x2F;“位与”即1&amp;&amp;1&#x3D;&#x3D;1, 1&amp;&amp;0&#x3D;&#x3D;0, 0&amp;&amp;0&#x3D;&#x3D;0&#x2F;&#x2F;平时我们使用的数字都是十进制数，该方法是对转化后的二进制数进行比较。&#x2F;&#x2F;&quot;&amp;&quot;运算符就是比较二进制中为true的值提取出来，然后逐位计算true或false。24 &amp; 5 &#x2F;&#x2F;结果：0&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 0&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0000 000024 &amp; 20 &#x2F;&#x2F;结果：16&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;数值20：0000 0000 0000 0000  0000 0000 0001 0100&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 0000</code></pre><h3 id="“-”运算符"><a href="#“-”运算符" class="headerlink" title="“^”运算符"></a>“^”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;^&quot;运算符：用于对两个二进制操作数逐位“位异或”进行比较。&#x2F;&#x2F;“位异或”即1&amp;&amp;0&#x3D;&#x3D;1 1&amp;&amp;1&#x3D;&#x3D;0 0&amp;&amp;0&#x3D;&#x3D;024 &amp; 5 &#x2F;&#x2F;结果：29&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre><h3 id="“-”运算符-1"><a href="#“-”运算符-1" class="headerlink" title="“|”运算符"></a>“|”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;|&quot;运算符用于对两个二进制操作数逐位进行“位或”比较。&#x2F;&#x2F;“位与”即1||1&#x3D;&#x3D;1, 1||0&#x3D;&#x3D;1, 0||0&#x3D;&#x3D;0&#x2F;&#x2F;其他与&quot;&amp;&quot;运算符相似24 &amp; 5 &#x2F;&#x2F;结果：29&#x2F;&#x2F;具体规则：逐位进行比较，例如1 &amp;&amp; 0 结果就是 1&#x2F;&#x2F;数值5： 0000 0000 0000 0000  0000 0000 0000 0101&#x2F;&#x2F;数值24：0000 0000 0000 0000  0000 0000 0001 1000&#x2F;&#x2F;结果：  0000 0000 0000 0000  0000 0000 0001 1101</code></pre><h3 id="“-”运算符-2"><a href="#“-”运算符-2" class="headerlink" title="“~”运算符"></a>“~”运算符</h3><pre><code class="hljs [javascript]">&#x2F;&#x2F;&quot;~&quot;运算符：简单理解为取负运算，再减去1~24 &#x2F;&#x2F;结果：-25 即：-24-1~10 &#x2F;&#x2F;结果：-11 即：-10-1</code></pre>]]></content>
     
     
     <categories>
