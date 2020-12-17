@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>(Python)提取对应文件里的图片并复制路径 - liuyifeng&#39;s blog</title>
+  <title>(Python)导出中文，且排除已经导出过的记录 - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-27 22:02" pubdate>
-        2020年11月27日 晚上
+      <time datetime="2020-12-17 21:28" pubdate>
+        2020年12月17日 晚上
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      248 字
+      486 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4
+      8
        分钟
     </span>
   
@@ -242,74 +242,130 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">(Python)提取对应文件里的图片并复制路径</h1>
+            <h1 style="display: none">(Python)导出中文，且排除已经导出过的记录</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：几秒前
+                  本文最后更新于：4 分钟前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <p>提取对应文件里的图片并复制路径。</p>
+              <p>导出中文，且排除已经导出过的记录到excel表格中。</p>
 <a id="more"></a>
 
 <p>本例子采用python3.8.0版本</p>
+<p>之前有类似的，这部分只是稍作完善。</p>
 <pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span>
 
-<span class="hljs-keyword">import</span> re
+<span class="hljs-comment">#python3</span>
+
 <span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> os.path <span class="hljs-keyword">import</span> join
+<span class="hljs-keyword">import</span> re
 <span class="hljs-keyword">import</span> xlrd
-<span class="hljs-keyword">import</span> shutil
+<span class="hljs-keyword">import</span> xlwt
+<span class="hljs-keyword">import</span> xlsxwriter
+<span class="hljs-keyword">from</span> xlutils.copy <span class="hljs-keyword">import</span> copy   
 
-rootpath = <span class="hljs-string">&#x27;&#x27;</span>
+<span class="hljs-comment"># 过滤掉行数较多且不含中文的部分json配置</span>
+filtersList = [<span class="hljs-string">&quot;a.json&quot;</span>, <span class="hljs-string">&quot;b.json&quot;</span>, <span class="hljs-string">&quot;c.json&quot;</span>, <span class="hljs-string">&quot;d.json&quot;</span>, <span class="hljs-string">&quot;e.json&quot;</span>]
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">extrachImage</span>(<span class="hljs-params">filePath</span>):</span>
-    old_src_url = <span class="hljs-string">&quot;assets/&quot;</span> + filePath
-    new_src_url = <span class="hljs-string">&quot;copyFiles_UI/&quot;</span> + filePath
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(old_src_url):
-        <span class="hljs-keyword">return</span>
-    pattern = <span class="hljs-string">r&#x27;.*\/&#x27;</span>
-    matches = re.findall(pattern, new_src_url)
-    dir_path = matches[<span class="hljs-number">0</span>]
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(dir_path):
-        print(<span class="hljs-string">&quot;mkdir :&quot;</span> + dir_path)
-        os.makedirs(dir_path)
-    <span class="hljs-keyword">if</span> os.path.exists(old_src_url):
-        shutil.copyfile(old_src_url, new_src_url)
+DATA_PATH = <span class="hljs-string">&quot;D:/client/1.0/DATA&quot;</span>
 
-<span class="hljs-comment"># 遍历excel表格</span>
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forEachExcel</span>(<span class="hljs-params">excelPath</span>):</span>
-    <span class="hljs-comment"># 打开表格</span>
-    workbook = xlrd.open_workbook(excelPath) 
+dataArr = []
+pattern1 = <span class="hljs-string">r&#x27;(&quot;|\&#x27;|`)(.*?)(?&lt;!\\)\1&#x27;</span>  <span class="hljs-comment">#匹配了转义</span>
+pattern2 = <span class="hljs-string">r&#x27;(.*)([\u4e00-\u9fa5]+)\1&#x27;</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Point</span>():</span>
+    <span class="hljs-keyword">pass</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read_line</span>(<span class="hljs-params">line</span>):</span>
+    matches = re.findall(pattern1, line)
+    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> matches:
+        item = <span class="hljs-built_in">str</span>(item[<span class="hljs-number">1</span>])
+        checkResult = re.findall(pattern2, item)
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> checkResult:
+            <span class="hljs-keyword">continue</span>
+        <span class="hljs-built_in">setattr</span>(p, item, <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">exportChinese</span>(<span class="hljs-params">filePath</span>):</span>
+    <span class="hljs-keyword">for</span> root, dirs, files <span class="hljs-keyword">in</span> os.walk(filePath):
+        <span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> files:
+            <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;.json&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> filename:
+                <span class="hljs-keyword">continue</span>
+            <span class="hljs-comment"># print(filename)</span>
+            file_url = join(root, filename)
+            f = <span class="hljs-built_in">open</span>(file_url, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>)
+            line = f.readline()
+            <span class="hljs-keyword">while</span> line:
+                isbool = read_line(line)
+                <span class="hljs-keyword">if</span> filename <span class="hljs-keyword">in</span> filtersList:
+                    <span class="hljs-keyword">if</span> isbool:
+                        print(<span class="hljs-string">&quot;error to json has in filters：&quot;</span> + filename)
+                line = f.readline()
+            f.close()
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">checkAndWriteExcel</span>():</span>
+    <span class="hljs-comment"># 没有该文件就创建</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(lib_path):
+        <span class="hljs-comment"># 路径拼接</span>
+        path = os.path.join(rootpath,<span class="hljs-string">&#x27;language_data_lib.xls&#x27;</span>)
+        <span class="hljs-comment"># 创建表格</span>
+        newxlsx = xlsxwriter.Workbook(path) 
+        <span class="hljs-comment"># 创建分页</span>
+        newsheet = newxlsx.add_worksheet(<span class="hljs-string">&quot;lib&quot;</span>)
+        <span class="hljs-comment"># 创建完要记得关闭</span>
+        newxlsx.close()
+
+    <span class="hljs-comment"># 打开表格-读取</span>
+    readBook = xlrd.open_workbook(lib_path) 
     <span class="hljs-comment"># 根据sheet索引或者名称获取sheet内容</span>
-    sheet_src = workbook.sheet_by_name(<span class="hljs-string">&#x27;cht&#x27;</span>)
-    <span class="hljs-comment"># 遍历走起</span>
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(sheet_src.nrows):
-        img_path = sheet_src.cell(i, <span class="hljs-number">0</span>).value <span class="hljs-comment"># 第一列每一行的数据</span>
-        boolVal = sheet_src.cell(i, <span class="hljs-number">1</span>).value <span class="hljs-comment"># 第二列</span>
-        pattern = <span class="hljs-string">r&#x27;[\u4e00-\u9fa5]&#x27;</span>
-        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> boolVal:
-            <span class="hljs-keyword">continue</span>
-        matches = re.findall(pattern, <span class="hljs-built_in">str</span>(boolVal))
-        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(matches) == <span class="hljs-number">0</span>:
-            <span class="hljs-keyword">continue</span>
-        <span class="hljs-comment"># 非jpg或png的过滤</span>
-        isImg = img_path.find(<span class="hljs-string">&quot;.png&quot;</span>) &gt; <span class="hljs-number">-1</span> <span class="hljs-keyword">or</span> img_path.find(<span class="hljs-string">&quot;.jpg&quot;</span>) &gt; <span class="hljs-number">-1</span>
-        <span class="hljs-keyword">if</span> isImg == <span class="hljs-literal">False</span>:
-            <span class="hljs-keyword">continue</span>
-        extrachImage(img_path)
+    read_sheet = readBook.sheet_by_name(<span class="hljs-string">&#x27;lib&#x27;</span>)
 
-<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
-    target_folder = os.path.exists(<span class="hljs-string">&quot;copyFiles_UI&quot;</span>)
-    <span class="hljs-keyword">if</span> target_folder == <span class="hljs-literal">False</span>:
-        root = os.getcwd()
-        os.mkdir(root + <span class="hljs-string">&quot;\\copyFiles_UI&quot;</span>)
+    <span class="hljs-comment"># 最大行数</span>
+    lineMax = read_sheet.nrows 
+    <span class="hljs-comment"># 记录行数    </span>
+    index = lineMax + <span class="hljs-number">0</span> 
+    <span class="hljs-comment"># 对比原excel表</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> p.__dict__.items():
+        isHave = <span class="hljs-literal">False</span>
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(read_sheet.nrows):
+            copy_first = read_sheet.cell(i, <span class="hljs-number">0</span>).value <span class="hljs-comment">#第一列每一行的数据</span>
+            <span class="hljs-keyword">if</span> copy_first == k:
+                isHave = <span class="hljs-literal">True</span>
+                <span class="hljs-keyword">break</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isHave:
+            dataArr.append(k)
     
-    excel_path = <span class="hljs-string">&quot;20201124.xls&quot;</span>
+    <span class="hljs-comment"># 打开表格-写入</span>
+    writeBook = copy(readBook)          
+    <span class="hljs-comment"># 根据sheet索引或者名称获取sheet内容</span>
+    write_sheet = writeBook.get_sheet(<span class="hljs-number">0</span>)
+    <span class="hljs-comment"># 写入excel表</span>
+    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> dataArr:
+        write_sheet.write(index, <span class="hljs-number">0</span>, item) <span class="hljs-comment">#行，列，数据</span>
+        index = index + <span class="hljs-number">1</span>
+    writeBook.save(<span class="hljs-string">&#x27;language_data_lib.xls&#x27;</span>)
     
-    forEachExcel(excel_path)</code></pre>
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:  
+    print(<span class="hljs-string">&quot;exportFromDATA start&quot;</span>)
+
+    rootpath = os.getcwd()
+    file_path = os.path.join(rootpath, DATA_PATH) 
+    lib_path = os.path.join(rootpath,<span class="hljs-string">&#x27;language_data_lib.xls&#x27;</span>) 
+
+    p = Point()
+
+    <span class="hljs-comment"># 提取中文</span>
+    exportChinese(file_path)
+
+    <span class="hljs-comment"># 写入excel</span>
+    checkAndWriteExcel()
+
+    print(<span class="hljs-string">&quot;exportFromDATA end&quot;</span>)</code></pre>
             </div>
             <hr>
             <div>
@@ -341,9 +397,9 @@ rootpath = <span class="hljs-string">&#x27;&#x27;</span>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/05/javascript-learn-test05/">
+                      <a href="/2020/12/17/python-note009/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Javascript笔记(一)</span>
+                        <span class="hidden-mobile">(Python)把中文覆盖回原导出文件</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -351,8 +407,8 @@ rootpath = <span class="hljs-string">&#x27;&#x27;</span>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/27/python-note006/">
-                        <span class="hidden-mobile">(Python)实现TextureMerger打包图集</span>
+                      <a href="/2020/12/05/python-note007/">
+                        <span class="hidden-mobile">(Python)提取对应文件里的图片并复制路径</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -514,7 +570,7 @@ rootpath = <span class="hljs-string">&#x27;&#x27;</span>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "(Python)提取对应文件里的图片并复制路径&nbsp;",
+        "(Python)导出中文，且排除已经导出过的记录&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,
