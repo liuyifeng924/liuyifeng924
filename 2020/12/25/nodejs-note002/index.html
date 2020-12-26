@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>(Python)实现TextureMerger打包图集 - liuyifeng&#39;s blog</title>
+  <title>NodeJS服务器学习笔记（二） - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-27 21:32" pubdate>
-        2020年11月27日 晚上
+      <time datetime="2020-12-25 20:55" pubdate>
+        2020年12月25日 晚上
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      249 字
+      829 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4
+      10
        分钟
     </span>
   
@@ -242,60 +242,82 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">(Python)实现TextureMerger打包图集</h1>
+            <h1 style="display: none">NodeJS服务器学习笔记（二）</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 个月前
+                  本文最后更新于：1 分钟前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <p>TextureMerger的用法详解，使用命令行实现TextureMerger打包图集。</p>
+              <p>这一页笔记几乎与node没有实际关系，只是需要学习服务端就可能需要用到。</p>
 <a id="more"></a>
 
-<p>本例子采用python2.7.16版本</p>
-<p>TextureMerger的用法：<br>    - Texture Merger 的命令行，注意路径必须是绝对路径，路径好像不支持中文<br>    - 命令格式：-p [目录] […] -o [json输出路径] -e [文件筛选正则表达式]<br>    - example: TextureMerger -p e:/01main -o e:/01main.json -e /.*.(png)</p>
-<pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<h1 id="Mongodb-与-Mongoose-的使用"><a href="#Mongodb-与-Mongoose-的使用" class="headerlink" title="Mongodb 与 Mongoose 的使用"></a>Mongodb 与 Mongoose 的使用</h1><p>mongoDB是一个基于分布式文件存储、面向文档存储的开源数据库系统。</p>
+<p>mongoose是mongoDB的一个对象模型工具，是基于node-mongodb-native开发的mongoDB的nodejs驱动，可以在异步的环境下执行。同时它也是针对mongoDB操作的一个对象模型库，封装了mongoDB对文档的一些增删改查等常用方法，让nodejs操作mongoDB数据库变得更加容易。它的作用就是，在程序代码中，定义数据库中的数据格式，然后取数据时通过它们，可以把数据库中的document映射成程序中的一个对象，这个对象有 .save、 .update 等一系列方法，和 .title、 .author 等一系列属性。在调用这些方法时，odm 会根据你调用时所用的条件，自动转换成相应的 mongodb shell 语句帮你发送出去。自然地，在程序中链式调用一个个的方法要比手写数据库操作语句具有更大的灵活性和便利性。</p>
+<p>Ps：odm 是 <code>Object-Document Mapping</code>，对象文档映射。</p>
+<h2 id="Mongodb"><a href="#Mongodb" class="headerlink" title="Mongodb"></a>Mongodb</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>window传统的傻瓜式安装，地址如下：<br><a target="_blank" rel="noopener" href="https://www.mongodb.com/download-center/community">MongoDB 预编译二进制包下载地址</a><br>假如已经在E盘安装了mangodb。</p>
+<h3 id="创建-MangoDB-数据库目录"><a href="#创建-MangoDB-数据库目录" class="headerlink" title="创建 MangoDB 数据库目录"></a>创建 MangoDB 数据库目录</h3><pre><code class="hljs powershell"><span class="hljs-variable">$</span> <span class="hljs-built_in">cd</span> e:
+<span class="hljs-variable">$</span> mkdir <span class="hljs-keyword">data</span> &amp;&amp; <span class="hljs-built_in">cd</span> <span class="hljs-keyword">data</span>
+<span class="hljs-variable">$</span> mkdir mangoDB &amp;&amp; <span class="hljs-built_in">cd</span> mangoDB</code></pre>
 
-<span class="hljs-keyword">import</span> os
-<span class="hljs-keyword">import</span> zipfile
-<span class="hljs-keyword">from</span> zlib <span class="hljs-keyword">import</span> crc32
-<span class="hljs-keyword">import</span> json
-<span class="hljs-keyword">import</span> sys
-<span class="hljs-keyword">import</span> shutil
-<span class="hljs-keyword">import</span> os.path
+<h3 id="运行-MangoDB-服务器"><a href="#运行-MangoDB-服务器" class="headerlink" title="运行 MangoDB 服务器"></a>运行 MangoDB 服务器</h3><pre><code class="hljs taggerscript">$ e:<span class="hljs-symbol">\m</span>angodb<span class="hljs-symbol">\b</span>in<span class="hljs-symbol">\m</span>angod --dbpath e:<span class="hljs-symbol">\d</span>ata<span class="hljs-symbol">\m</span>angoDB</code></pre>
 
-<span class="hljs-comment">#美术资源同级目录</span>
-URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
+<h3 id="连接-MangoDB"><a href="#连接-MangoDB" class="headerlink" title="连接 MangoDB"></a>连接 MangoDB</h3><pre><code class="hljs taggerscript">$ e:<span class="hljs-symbol">\m</span>ongodb<span class="hljs-symbol">\b</span>in<span class="hljs-symbol">\m</span>ango.exe</code></pre>
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">tmmckeyactdir</span>(<span class="hljs-params">in_dir, out_dir</span>):</span>
-    in_dir = in_dir.replace(<span class="hljs-string">&#x27;\\&#x27;</span>, <span class="hljs-string">&#x27;/&#x27;</span>)
-    
-    e1 = in_dir.rfind(<span class="hljs-string">&#x27;/&#x27;</span>)
-    dirName = in_dir[e1 + <span class="hljs-number">1</span> : <span class="hljs-built_in">len</span>(in_dir)]
-    in_dir = URL_HEAD + in_dir
-    out_dir = URL_HEAD + out_dir
-       
-    <span class="hljs-comment">#过滤部分不需要打包的文件夹</span>
-    flag = <span class="hljs-number">0</span>
-    <span class="hljs-built_in">print</span> in_dir
-    <span class="hljs-keyword">for</span> dPath, dirs, fs <span class="hljs-keyword">in</span> os.walk(in_dir):
-        <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> fs:
-            <span class="hljs-built_in">print</span> file 
-    output_path = out_dir + <span class="hljs-string">&#x27;/&#x27;</span> + dirName + <span class="hljs-string">&#x27;.json&#x27;</span>
-    <span class="hljs-built_in">print</span> output_path
-   
-    cmd = <span class="hljs-string">&#x27;TextureMerger -p &#123;in_dir&#125; -o &#123;output_path&#125; -e /(?!&#123;dirName&#125;\.png)\S[\w]+\S\.(png)&#x27;</span>.<span class="hljs-built_in">format</span>(in_dir = in_dir, output_path = output_path, dirName = dirName)
-    <span class="hljs-built_in">print</span> cmd
-    os.system(cmd)  
-    
-<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:  
-    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; start&quot;</span>
+<h3 id="配置-MangoDB-服务"><a href="#配置-MangoDB-服务" class="headerlink" title="配置 MangoDB 服务"></a>配置 MangoDB 服务</h3><p>创建配置文件</p>
+<pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">cd</span> e:\data\<span class="hljs-built_in">log</span></span></code></pre>
 
-    tmmckeyactdir(<span class="hljs-string">&#x27;dirSrc&#x27;</span>, <span class="hljs-string">&#x27;dirSrc&#x27;</span>)
+<p>创建一个配置文件位于 e:\mongodb\mongod.cfg，其中指定 systemLog.path 和 storage.dbPath。具体配置内容如下：</p>
+<pre><code class="hljs less"><span class="hljs-attribute">systemLog</span>:
+    <span class="hljs-attribute">destination</span>: file
+    <span class="hljs-attribute">path</span>: <span class="hljs-attribute">e</span>:\data\log\mongod.log
+<span class="hljs-attribute">storage</span>:
+    <span class="hljs-attribute">dbPath</span>: <span class="hljs-attribute">e</span>:\data\db</code></pre>
 
-    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; end&quot;</span></code></pre>
+<h3 id="安装-MangoDB-服务"><a href="#安装-MangoDB-服务" class="headerlink" title="安装 MangoDB 服务"></a>安装 MangoDB 服务</h3><pre><code class="hljs taggerscript">$ e:<span class="hljs-symbol">\m</span>ongodb<span class="hljs-symbol">\b</span>in<span class="hljs-symbol">\m</span>ongod.exe --config &quot;e:<span class="hljs-symbol">\m</span>ongodb<span class="hljs-symbol">\m</span>ongod.cfg&quot; --install</code></pre>
+
+<h3 id="管理-MangoDB-服务"><a href="#管理-MangoDB-服务" class="headerlink" title="管理 MangoDB 服务"></a>管理 MangoDB 服务</h3><pre><code class="hljs awk">$ net start MangoDB 			<span class="hljs-regexp">//</span>启动
+$ net stop MangoDB 			<span class="hljs-regexp">//</span>关闭
+$ e:\mangodb\bin\mongod.exe --remove 	<span class="hljs-regexp">//</span>移除</code></pre>
+
+<h2 id="Mongoose"><a href="#Mongoose" class="headerlink" title="Mongoose"></a>Mongoose</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code class="hljs cmake">$ cnpm <span class="hljs-keyword">install</span> mongoose</code></pre>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><pre><code class="hljs awk"><span class="hljs-regexp">//</span> 首先引入 mongoose 这个模块
+var mongoose = require(<span class="hljs-string">&#x27;mongoose&#x27;</span>);
+<span class="hljs-regexp">//</span> 然后连接对应的数据库：mongodb:<span class="hljs-regexp">//</span>localhost/test
+<span class="hljs-regexp">//</span> 其中，前面那个 mongodb 是 protocol scheme 的名称；localhost 是 mongod 所在的地址；
+<span class="hljs-regexp">//</span> 端口号省略则默认连接 <span class="hljs-number">27017</span>；test 是数据库的名称
+<span class="hljs-regexp">//</span> mongodb 中不需要建立数据库，当你需要连接的数据库不存在时，会自动创建一个出来。
+<span class="hljs-regexp">//</span> mongodb 的默认配置只接受来自本机的请求，内网都连不上。
+<span class="hljs-regexp">//</span> 当需要在内网中为其他机器提供 mongodb 服务时，或许可以了解了解 iptables 相关的东西。
+mongoose.connect(<span class="hljs-string">&#x27;mongodb://localhost/test&#x27;</span>);
+
+<span class="hljs-regexp">//</span>推荐在同一个 collection 中使用固定的数据形式。
+<span class="hljs-regexp">//</span>创建model时，它在数据库中的名字根据传给 mongoose.model 的第一个参数决定，mongoose 会将名词变为复数，例如cat会变成cats。
+var Cat = mongoose.model(<span class="hljs-string">&#x27;cat&#x27;</span>, &#123;
+  name: String,
+  friends: [String],
+  age: Number,
+&#125;);
+
+<span class="hljs-regexp">//</span> new 一个新对象，名叫 kitty
+<span class="hljs-regexp">//</span> 接着为 kitty 的属性们赋值
+var kitty = new Cat(&#123; name: <span class="hljs-string">&#x27;nini&#x27;</span>, friends: [<span class="hljs-string">&#x27;meimei&#x27;</span>, <span class="hljs-string">&#x27;zhuba&#x27;</span>]&#125;);
+kitty.age = <span class="hljs-number">2</span>;
+
+<span class="hljs-regexp">//</span> 调用 .save 方法后，mongoose 会去你的 mongodb 中的 test 数据库里，存入一条记录。
+kitty.save(<span class="hljs-keyword">function</span> (err) &#123;
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-regexp">//</span> ...
+  console.log(<span class="hljs-string">&#x27;saveOver&#x27;</span>);
+&#125;);</code></pre>
+
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>mango
+<span class="hljs-variable">$ </span>show dbs
+<span class="hljs-variable">$ </span><span class="hljs-keyword">use</span> test
+<span class="hljs-variable">$ </span>show collections
+<span class="hljs-variable">$ </span>db.cats.find()</code></pre>
             </div>
             <hr>
             <div>
@@ -304,7 +326,7 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
+                      <a class="hover-with-bg" href="/categories/Nodejs/">Nodejs</a>
                     
                   </div>
                 
@@ -312,11 +334,11 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Egret/">Egret</a>
+                      <a class="hover-with-bg" href="/tags/Nodejs/">Nodejs</a>
                     
-                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
+                      <a class="hover-with-bg" href="/tags/MangoDB/">MangoDB</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E8%84%9A%E6%9C%AC/">脚本</a>
+                      <a class="hover-with-bg" href="/tags/Mangoose/">Mangoose</a>
                     
                   </div>
                 
@@ -329,9 +351,9 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/05/javascript-learn-test05/">
+                      <a href="/2020/12/26/nodejs-note003/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Javascript笔记(一)</span>
+                        <span class="hidden-mobile">NodeJS服务器学习笔记（三）</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -339,8 +361,8 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/27/python-note005/">
-                        <span class="hidden-mobile">(Python)利用Python脚本分割json图集</span>
+                      <a href="/2020/12/25/nodejs-note001/">
+                        <span class="hidden-mobile">NodeJS服务器学习笔记（一）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -502,7 +524,7 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "(Python)实现TextureMerger打包图集&nbsp;",
+        "NodeJS服务器学习笔记（二）&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,

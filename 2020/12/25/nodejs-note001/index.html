@@ -17,7 +17,7 @@
   <meta name="description" content="生活笔记">
   <meta name="author" content="刘逸风">
   <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
-  <title>(Python)实现TextureMerger打包图集 - liuyifeng&#39;s blog</title>
+  <title>NodeJS服务器学习笔记（一） - liuyifeng&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -182,8 +182,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-27 21:32" pubdate>
-        2020年11月27日 晚上
+      <time datetime="2020-12-25 20:46" pubdate>
+        2020年12月25日 晚上
       </time>
     </span>
   
@@ -194,7 +194,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      249 字
+      453 字
     </span>
   
 
@@ -204,7 +204,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4
+      5
        分钟
     </span>
   
@@ -242,60 +242,59 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">(Python)实现TextureMerger打包图集</h1>
+            <h1 style="display: none">NodeJS服务器学习笔记（一）</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 个月前
+                  本文最后更新于：21 小时前
                 
               </p>
             
             <div class="markdown-body" id="post-body">
-              <p>TextureMerger的用法详解，使用命令行实现TextureMerger打包图集。</p>
+              <p>搭建一个简单的nodejs服务器。</p>
 <a id="more"></a>
 
-<p>本例子采用python2.7.16版本</p>
-<p>TextureMerger的用法：<br>    - Texture Merger 的命令行，注意路径必须是绝对路径，路径好像不支持中文<br>    - 命令格式：-p [目录] […] -o [json输出路径] -e [文件筛选正则表达式]<br>    - example: TextureMerger -p e:/01main -o e:/01main.json -e /.*.(png)</p>
-<pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>nodejs环境：window下可以直接在官网下载安装。下载且安装完成后可以通过cmd命令行输入以下代码来确认安装的nodejs版本。</p>
+<pre><code class="hljs crmsh">$ <span class="hljs-keyword">node</span> <span class="hljs-title">-v</span></code></pre>
 
-<span class="hljs-keyword">import</span> os
-<span class="hljs-keyword">import</span> zipfile
-<span class="hljs-keyword">from</span> zlib <span class="hljs-keyword">import</span> crc32
-<span class="hljs-keyword">import</span> json
-<span class="hljs-keyword">import</span> sys
-<span class="hljs-keyword">import</span> shutil
-<span class="hljs-keyword">import</span> os.path
+<p>最新版的nodejs已经包括了npm，想要查看npm版本可以执行以下代码：</p>
+<pre><code class="hljs ada">$ npm <span class="hljs-comment">--version</span></code></pre>
 
-<span class="hljs-comment">#美术资源同级目录</span>
-URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
+<p>部分情况下，使用npm安装其他库的时候会报网络错误，或者是下载缓慢，国内可以通过使用cnpm（淘宝镜像）来解决这种情况（使用的时候把npm替换为cnpm即可），cnpm安装命令：</p>
+<pre><code class="hljs awk">$ npm install -g cnpm --registry=https:<span class="hljs-regexp">//</span>registry.npm.taobao.org  <span class="hljs-regexp">//</span>使用淘宝镜像</code></pre>
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">tmmckeyactdir</span>(<span class="hljs-params">in_dir, out_dir</span>):</span>
-    in_dir = in_dir.replace(<span class="hljs-string">&#x27;\\&#x27;</span>, <span class="hljs-string">&#x27;/&#x27;</span>)
-    
-    e1 = in_dir.rfind(<span class="hljs-string">&#x27;/&#x27;</span>)
-    dirName = in_dir[e1 + <span class="hljs-number">1</span> : <span class="hljs-built_in">len</span>(in_dir)]
-    in_dir = URL_HEAD + in_dir
-    out_dir = URL_HEAD + out_dir
-       
-    <span class="hljs-comment">#过滤部分不需要打包的文件夹</span>
-    flag = <span class="hljs-number">0</span>
-    <span class="hljs-built_in">print</span> in_dir
-    <span class="hljs-keyword">for</span> dPath, dirs, fs <span class="hljs-keyword">in</span> os.walk(in_dir):
-        <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> fs:
-            <span class="hljs-built_in">print</span> file 
-    output_path = out_dir + <span class="hljs-string">&#x27;/&#x27;</span> + dirName + <span class="hljs-string">&#x27;.json&#x27;</span>
-    <span class="hljs-built_in">print</span> output_path
-   
-    cmd = <span class="hljs-string">&#x27;TextureMerger -p &#123;in_dir&#125; -o &#123;output_path&#125; -e /(?!&#123;dirName&#125;\.png)\S[\w]+\S\.(png)&#x27;</span>.<span class="hljs-built_in">format</span>(in_dir = in_dir, output_path = output_path, dirName = dirName)
-    <span class="hljs-built_in">print</span> cmd
-    os.system(cmd)  
-    
-<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:  
-    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; start&quot;</span>
+<p>如果需要不同版本的nodejs，可以通过安装nvm来控制nodejs的版本。nvm for windows是一个命令行工具，在控制台输入nvm,就可以看到它的命令用法。基本命令有：</p>
+<pre><code class="hljs angelscript">$ nvm list　　		<span class="hljs-comment">//查看目前已经安装的版本</span>
+$ nvm install <span class="hljs-number">10.15</span><span class="hljs-number">.0</span> 	<span class="hljs-comment">//安装指定的版本的nodejs</span>
+$ nvm use <span class="hljs-number">10.15</span><span class="hljs-number">.0</span> 	<span class="hljs-comment">//使用指定版本的nodejs</span></code></pre>
 
-    tmmckeyactdir(<span class="hljs-string">&#x27;dirSrc&#x27;</span>, <span class="hljs-string">&#x27;dirSrc&#x27;</span>)
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn/">nodejs官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/coreybutler/nvm-windows/releases">nvm-windows下载地址</a></li>
+</ul>
+<h2 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h2><p>搭建一个简单的nodejs服务器，这里使用express框架搭建。</p>
+<pre><code class="hljs maxima">$ <span class="hljs-built_in">mkdir</span> <span class="hljs-built_in">demo</span> &amp;&amp; cd <span class="hljs-built_in">demo</span> 	//创建<span class="hljs-built_in">demo</span>目录并进入
+$ cnpm install <span class="hljs-built_in">express</span> 		//安装<span class="hljs-built_in">express</span></code></pre>
 
-    <span class="hljs-built_in">print</span> <span class="hljs-string">&quot; end&quot;</span></code></pre>
+<p>在demo文件夹下新建app.js文件，代码如下：</p>
+<pre><code class="hljs javascript"><span class="hljs-comment">// app.js</span>
+<span class="hljs-comment">// 引入 `express` 模块，并将它赋予给`express` </span>
+<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;express&#x27;</span>);
+<span class="hljs-comment">// 调用 express 实例</span>
+<span class="hljs-keyword">var</span> app = express();
+app.get(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>&#123;
+res.send(<span class="hljs-string">&#x27;hello node&#x27;</span>);
+&#125;);
+<span class="hljs-comment">// 监听本地的 3000 端口</span>
+app.listen(<span class="hljs-number">3000</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;app is listening at port 3000&#x27;</span>);
+&#125;);</code></pre>
+
+<p>在cmd执行启动命令：</p>
+<pre><code class="hljs crmsh">$ <span class="hljs-keyword">node</span> <span class="hljs-title">app</span>.js</code></pre>
+
+<p>然后在浏览器访问：“<a target="_blank" rel="noopener" href="http://127.0.0.1:3000/%E2%80%9D">http://127.0.0.1:3000/”</a> 或者 “<a target="_blank" rel="noopener" href="http://localhost:3000/%E2%80%9D%EF%BC%8C%E4%BC%9A%E8%BE%93%E5%87%BAhello">http://localhost:3000/”，会输出hello</a> node。至此一个简单的nodejs服务器完成了。</p>
+
             </div>
             <hr>
             <div>
@@ -304,7 +303,7 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
+                      <a class="hover-with-bg" href="/categories/Nodejs/">Nodejs</a>
                     
                   </div>
                 
@@ -312,11 +311,7 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Egret/">Egret</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E8%84%9A%E6%9C%AC/">脚本</a>
+                      <a class="hover-with-bg" href="/tags/Nodejs/">Nodejs</a>
                     
                   </div>
                 
@@ -329,9 +324,9 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/05/javascript-learn-test05/">
+                      <a href="/2020/12/25/nodejs-note002/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Javascript笔记(一)</span>
+                        <span class="hidden-mobile">NodeJS服务器学习笔记（二）</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -339,8 +334,8 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/27/python-note005/">
-                        <span class="hidden-mobile">(Python)利用Python脚本分割json图集</span>
+                      <a href="/2020/12/17/python-note010/">
+                        <span class="hidden-mobile">(Python)通过文件的md5值来确认文件是否修改</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -502,7 +497,7 @@ URL_HEAD = <span class="hljs-string">&#x27;E:/Projects/rawres/ui/&#x27;</span>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "(Python)实现TextureMerger打包图集&nbsp;",
+        "NodeJS服务器学习笔记（一）&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 70,

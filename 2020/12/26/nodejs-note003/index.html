@@ -1,0 +1,674 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" href="/images/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="生活笔记">
+  <meta name="author" content="刘逸风">
+  <meta name="keywords" content="前端,layabox,egret,游戏开发,javascript,typescript,生活">
+  <title>NodeJS服务器学习笔记（三） - liuyifeng&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+    
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Liuyifeng's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                主页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于我
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/images/bigbg.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      刘逸风
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-26 18:11" pubdate>
+        2020年12月26日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      910 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">NodeJS服务器学习笔记（三）</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：几秒前
+                
+              </p>
+            
+            <div class="markdown-body" id="post-body">
+              <p>使用nodejs-websocket + protobuf搭建服务器。</p>
+<a id="more"></a>
+
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><h3 id="新建package-json文件"><a href="#新建package-json文件" class="headerlink" title="新建package.json文件"></a>新建package.json文件</h3><p>新建server文件夹，并新建package.json文件。</p>
+<pre><code class="hljs routeros">$ mkdir<span class="hljs-built_in"> server </span>&amp;&amp; cd server
+$ cnpm init -y</code></pre>
+
+<p>package.json：</p>
+<pre><code class="hljs json">&#123;
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;sanguo-server&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-string">&quot;0.1.0&quot;</span>,
+  <span class="hljs-attr">&quot;description&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
+  <span class="hljs-attr">&quot;dependencies&quot;</span>: &#123;
+    <span class="hljs-attr">&quot;nodejs-websocket&quot;</span>: <span class="hljs-string">&quot;^1.7.2&quot;</span>,
+    <span class="hljs-attr">&quot;protobufjs&quot;</span>: <span class="hljs-string">&quot;^6.10.2&quot;</span>
+  &#125;,
+  <span class="hljs-attr">&quot;main&quot;</span>: <span class="hljs-string">&quot;app.js&quot;</span>,
+  <span class="hljs-attr">&quot;scripts&quot;</span>: &#123;&#125;,
+  <span class="hljs-attr">&quot;keywords&quot;</span>: [],
+  <span class="hljs-attr">&quot;author&quot;</span>: <span class="hljs-string">&quot;liuyifeng&quot;</span>
+&#125;</code></pre>
+
+<h3 id="安装websocket"><a href="#安装websocket" class="headerlink" title="安装websocket"></a>安装websocket</h3><pre><code class="hljs cmake">$ cnpm <span class="hljs-keyword">install</span> nodejs-websocket</code></pre>
+
+<h3 id="安装protobufjs"><a href="#安装protobufjs" class="headerlink" title="安装protobufjs"></a>安装protobufjs</h3><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>cnpm install protobufjs
+<span class="hljs-variable">$ </span>cnpm install <span class="hljs-variable">@egret</span>/protobuf -g</code></pre>
+
+<h2 id="引入Protobuf"><a href="#引入Protobuf" class="headerlink" title="引入Protobuf"></a>引入Protobuf</h2><h3 id="新建proto目录"><a href="#新建proto目录" class="headerlink" title="新建proto目录"></a>新建proto目录</h3><pre><code class="hljs dockerfile">$ pb-egret <span class="hljs-keyword">add</span></code></pre>
+
+<p>pbconfig.json文件：</p>
+<pre><code class="hljs json">&#123;
+    <span class="hljs-attr">&quot;options&quot;</span>: &#123;
+        <span class="hljs-attr">&quot;no-create&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">&quot;no-verify&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">&quot;no-convert&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">&quot;no-delimited&quot;</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">&quot;no-encode&quot;</span>: <span class="hljs-literal">false</span>,
+        <span class="hljs-attr">&quot;no-decode&quot;</span>: <span class="hljs-literal">false</span>
+    &#125;,
+    <span class="hljs-attr">&quot;sourceRoot&quot;</span>: <span class="hljs-string">&quot;protofile&quot;</span>,
+    <span class="hljs-attr">&quot;outputFile&quot;</span>: <span class="hljs-string">&quot;bundles/protobuf.js&quot;</span>
+&#125;</code></pre>
+
+<h3 id="新建proto文件"><a href="#新建proto文件" class="headerlink" title="新建proto文件"></a>新建proto文件</h3><p>新建login.proto文件，放在…/protobuf/protofile目录下</p>
+<pre><code class="hljs perl"><span class="hljs-keyword">package</span> sanguo;
+
+message LoginRe<span class="hljs-string">q &#123;</span>
+<span class="hljs-string">    required int32 uid = 1;</span>
+<span class="hljs-string">&#125;</span></code></pre>
+
+<h3 id="生成js文件和-d-ts文件"><a href="#生成js文件和-d-ts文件" class="headerlink" title="生成js文件和.d.ts文件"></a>生成js文件和.d.ts文件</h3><pre><code class="hljs verilog">$ pb-egret <span class="hljs-keyword">generate</span></code></pre>
+
+<p>如果需要生成对应的js文件可以执行以下命令：</p>
+<pre><code class="hljs gradle">$ pbjs -t <span class="hljs-keyword">static</span>-module -w commonjs -o .<span class="hljs-regexp">/protobuf/</span>protofile<span class="hljs-regexp">/login.js ./</span>protobuf<span class="hljs-regexp">/protofile/</span>login.proto
+$ pbjs -t <span class="hljs-keyword">static</span>-module -w commonjs -o .<span class="hljs-regexp">/protobuf/</span>protofile<span class="hljs-regexp">/common.js ./</span>protobuf<span class="hljs-regexp">/protofile/</span>*.proto</code></pre>
+
+<h2 id="使用Protobuf及websocket"><a href="#使用Protobuf及websocket" class="headerlink" title="使用Protobuf及websocket"></a>使用Protobuf及websocket</h2><ul>
+<li>拷贝protobuf/bundles/protobuf.d.ts到client/libs目录下</li>
+<li>拷贝protobuf/library/protobuf-library.d.ts到client/libs目录下</li>
+<li>拷贝protobuf/bundles/protobuf.min.js到client/bin/libs目录下</li>
+<li>拷贝protobuf/library/protobuf-library.min.js到client/bin/libs目录下</li>
+</ul>
+<p>Laya可以在IDE直接F9然后在类库管理勾选刚刚添加的.js文件保存即可。其他引擎需要在对应的地方自行引入。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>只贴关键部分，本例以Laya示例2D项目为例子 。</p>
+<pre><code class="hljs csharp"><span class="hljs-keyword">private</span> _socket: Laya.Socket;
+
+<span class="hljs-keyword">this</span>._socket = <span class="hljs-keyword">new</span> Laya.Socket();<span class="hljs-comment">//创建 socket 对象</span>
+<span class="hljs-keyword">this</span>._socket.connectByUrl(<span class="hljs-string">&quot;ws://localhost:8001&quot;</span>);<span class="hljs-comment">//建立连接</span>
+<span class="hljs-keyword">this</span>._socket.<span class="hljs-keyword">on</span>(Laya.Event.OPEN, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>.onConnect);<span class="hljs-comment">//连接正常打开抛出的事件</span>
+<span class="hljs-keyword">this</span>._socket.<span class="hljs-keyword">on</span>(Laya.Event.MESSAGE, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>.onReceive);<span class="hljs-comment">//接收到消息抛出的事件</span>
+<span class="hljs-keyword">this</span>._socket.<span class="hljs-keyword">on</span>(Laya.Event.CLOSE, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>.closeHandler);<span class="hljs-comment">//socket关闭抛出的事件</span>
+<span class="hljs-keyword">this</span>._socket.<span class="hljs-keyword">on</span>(Laya.Event.ERROR, <span class="hljs-keyword">this</span>, <span class="hljs-keyword">this</span>.errorHandler);<span class="hljs-comment">//连接出错抛出的事件</span>
+
+<span class="hljs-comment">/**连接成功*/</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">onConnect</span>(<span class="hljs-params">e:Laya.Event</span>)</span>&#123;
+        console.log(<span class="hljs-string">&quot;ClientSocket 连接成功&quot;</span>);
+        <span class="hljs-keyword">let</span> loginData:sanguo.LoginReq = <span class="hljs-keyword">new</span> sanguo.LoginReq();
+        loginData.uid = <span class="hljs-number">1234567</span>;
+        <span class="hljs-keyword">let</span> buffer = sanguo.LoginReq.encode(loginData).finish();
+        <span class="hljs-keyword">this</span>.send(buffer);
+    &#125;
+    
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 发送数据</span>
+<span class="hljs-comment">     * @param cmd 数据协议</span>
+<span class="hljs-comment">     * @param sendByte 发送的数据</span>
+<span class="hljs-comment">     */</span> 
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">send</span>(<span class="hljs-params">buffer: Uint8Array</span>)</span>&#123;
+        <span class="hljs-keyword">this</span>._socket.send(buffer);
+    &#125;
+
+    <span class="hljs-comment">/**接收数据*/</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">onReceive</span>(<span class="hljs-params">e</span>)</span>&#123;
+        <span class="hljs-comment">//读取socket数据</span>
+        <span class="hljs-keyword">var</span> <span class="hljs-built_in">byte</span> = <span class="hljs-keyword">new</span> Uint8Array(e)
+        <span class="hljs-keyword">var</span> data = sanguo.LoginReq.decode(<span class="hljs-built_in">byte</span>);
+        console.log(<span class="hljs-string">&quot;接收到服务端数据&quot;</span>, data.uid)
+    &#125;
+    
+    <span class="hljs-comment">//与服务器连接关闭时触发</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">closeHandler</span>(<span class="hljs-params">e</span>)</span>&#123;
+        console.log(<span class="hljs-string">&quot;与服务器连接断开.&quot;</span>);
+    &#125;
+    
+    <span class="hljs-comment">//与服务器通信错误时触发</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">errorHandler</span>(<span class="hljs-params">e</span>)</span>&#123;
+        console.log(<span class="hljs-string">&quot;与服务器通信错误.&quot;</span>);
+    &#125;</code></pre>
+
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> ws = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;nodejs-websocket&quot;</span>);
+<span class="hljs-keyword">var</span> protobufjs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;protobufjs&quot;</span>);
+<span class="hljs-comment">//使用login.js文件</span>
+<span class="hljs-keyword">var</span> root = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;./protobuf/protofile/login&quot;</span>);    
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;开始创建websocket&quot;</span>);
+<span class="hljs-keyword">var</span> server = ws.createServer(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">conn</span>) </span>&#123;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;连接成功&quot;</span>);
+    conn.on(<span class="hljs-string">&quot;binary&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">inStream</span>) </span>&#123;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;接收消息&quot;</span>);
+        <span class="hljs-keyword">var</span> data;
+        inStream.on(<span class="hljs-string">&quot;readable&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+            data = inStream.read();
+        &#125;)
+        inStream.on(<span class="hljs-string">&quot;end&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Received &quot;</span> + data.length + <span class="hljs-string">&quot; bytes of binary data&quot;</span>);
+            <span class="hljs-comment">//使用login.js文件</span>
+            <span class="hljs-comment">//解析登录数据</span>
+            <span class="hljs-keyword">var</span> loginReqObj = root.sanguo.LoginReq.decode(data);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;请求登录的用户:&quot;</span>,loginReqObj.uid);
+            <span class="hljs-comment">//返回登录响应</span>
+            <span class="hljs-keyword">let</span> loginResObj = root.sanguo.LoginReq.create();
+            loginResObj.code = <span class="hljs-number">200</span>;
+            loginResObj.uid = <span class="hljs-number">7654321</span>;
+            <span class="hljs-keyword">var</span> buffer = root.sanguo.LoginReq.encode(loginResObj).finish();
+            conn.send(buffer);
+        &#125;)
+    &#125;)
+    conn.on(<span class="hljs-string">&quot;close&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">code, reason</span>) </span>&#123;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;关闭连接&quot;</span>)
+    &#125;);
+    conn.on(<span class="hljs-string">&quot;error&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">code, reason</span>) </span>&#123;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;异常关闭&quot;</span>)
+    &#125;);
+&#125;).listen(<span class="hljs-number">8001</span>)
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;开始创建websocket完毕&quot;</span>);</code></pre>
+
+<p>执行 node app.js 即可启动，在命令行有输出日志；然后用打开客户端编译，在Chrome查看F12即可。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Nodejs/">Nodejs</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Nodejs/">Nodejs</a>
+                    
+                      <a class="hover-with-bg" href="/tags/websocket/">websocket</a>
+                    
+                      <a class="hover-with-bg" href="/tags/protobuf/">protobuf</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章如需转载，请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/25/nodejs-note002/">
+                        <span class="hidden-mobile">NodeJS服务器学习笔记（二）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "NodeJS服务器学习笔记（三）&nbsp;",
+      ],
+      cursorChar: "|",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
